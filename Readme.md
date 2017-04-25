@@ -1,7 +1,9 @@
-* Readme? Readme!
-** What the hell is it?
-   You got it, right?
-** Why don't you make this project public?
-   You know it, right?
-** It's Just a test.
+# README (No one will read me)
+--------------------------------------
+
+Project Name: S~~now~~B~~all~~ Spider
+Project Author: **OyaKti Studio**
+Project Status: **Working**
+
+> Bitbucket DO NOT support org-file which is better than markdown.
 
