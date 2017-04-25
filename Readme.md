@@ -15,6 +15,15 @@ Project Status: **Working**
 To make everything easy, I will descrirbe all functions with no **__** at the beginning/end of the name.
 (Using the same pattern can make description more understandable.)
 
+* FunctionToDo  (TODO)
+    Param:
+        1. xxxxxx(... default=...): ...
+        2. blabla(...): ...
+    Return:
+        ...
+    Comment:
+        ...
+
 ## RateChart.py:
 
 * GetRateChartAsDataframe
