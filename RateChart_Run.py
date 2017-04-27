@@ -108,7 +108,7 @@ if __name__ == '__main__':
     symbol_list_input = input()
     for symbol in symbol_list_input.split(','):
         symbol_list.append(symbol)
-    if symbol_list == []:
+    if symbol_list == [] or symbol_list == ['']:
         print("空输入!")
         quit()
     print("请输入保存的文件名(默认为RateChart)> ", end='')
