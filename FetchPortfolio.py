@@ -320,12 +320,17 @@ def GetPortfolioInfo(Symbol):
         resp, cont = request(postUrl + Symbol, header = Header)
     except:
         raise Exception('无法获取组合信息！')
-    c = re.compile('(<div ((style="border:0;padding-left:0"|))class="cube-profit-day cube-profit">.+?</div>.+?</div>)')
+    c = re.compile('(<div (style="border:0;padding-left:0" |)'
+                   'class="cube-profit-day cube-profit">.+?</div>.+?</div>)')
     data = c.findall(cont.decode('utf-8'))
     day_return = float(data[0][0].split('>')[4].split('%')[0]) / 100
     month_return = float(data[1][0].split('>')[4].split('%')[0]) / 100
     nav = float(data[2][0].split('>')[4].split('<')[0])  # 净值
     total_return = float(nav - 1)
+    # Date
+    c = re.compile('\d{4}-\d{2}-\d{2}')
+    date = c.findall(cont.decode('utf-8'))[0]
+
     try:
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
@@ -356,8 +361,8 @@ def GetPortfolioInfo(Symbol):
         liquidity_3m = np.nan
         liquidity_12m = np.nan
 
-    return {'day_return': day_return,
-            'month_return': month_return,
+    return {'day_return': float('%.4f' % day_return),
+            'month_return': float('%.4f' % month_return),
             'nav': nav,
             'total_return': float('%.4f' % total_return),
             'market': GetPortfolioMarket(Symbol),
@@ -365,7 +370,8 @@ def GetPortfolioInfo(Symbol):
             'turnover_3m': turnover_3m,
             'turnover_12m': turnover_12m,
             'liquidity_3m': liquidity_3m,
-            'liquidity_12m': liquidity_12m
+            'liquidity_12m': liquidity_12m,
+            'begin': date
             }
 
 def GetPortfoliosInfo(Symbols):
