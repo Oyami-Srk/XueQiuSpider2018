@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from FetchPortfolio import *
 
 if __name__ == '__main__':
