@@ -132,3 +132,6 @@ To make everything easy, I will descrirbe all functions with no **__** at the be
                 'liquidity_12m': liquidity_12m  
                 }  
         `
+
+* GetPortfoliosInfo
+    Plural form of GetPortfolioInfo
