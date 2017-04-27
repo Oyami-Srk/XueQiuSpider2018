@@ -367,3 +367,13 @@ def GetPortfolioInfo(Symbol):
             'liquidity_3m': liquidity_3m,
             'liquidity_12m': liquidity_12m
             }
+
+def GetPortfoliosInfo(Symbols):
+    # col = ['day_return', 'month_return', 'nav', 'total_return', 'market', 'closed',
+    #        'turnover_3m', 'turnover_12m', 'liquidity_3m', 'liquidity_12m']
+    df = {}
+    for Symbol in Symbols:
+        df[Symbol] = GetPortfoliosInfo(Symbol)
+    df = DataFrame(df).T
+    # df = DataFrame(df, index=col).T
+    return df
