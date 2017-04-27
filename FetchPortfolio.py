@@ -281,7 +281,9 @@ def CheckPortfolioClosed(Symbol):
 def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000):
     Tsil = []
     for neko in range(Min, Max + 1):
-        print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='')
+        # print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='')
+        # print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='\n')
+        print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100) + '%')
         SecretCode = 'ZH' + '%.6d' % neko
         pmarket = GetPortfolioMarket(SecretCode)
         if pmarket == 'no_portfolio' or pmarket == 'undefined':
@@ -378,8 +380,14 @@ def GetPortfoliosInfo(Symbols):
     # col = ['day_return', 'month_return', 'nav', 'total_return', 'market', 'closed',
     #        'turnover_3m', 'turnover_12m', 'liquidity_3m', 'liquidity_12m']
     df = {}
-    for Symbol in Symbols:
-        df[Symbol] = GetPortfoliosInfo(Symbol)
+    n = len(Symbols)
+    # for Symbol in Symbols:
+    #     # print('%d/%d - %.2f' % (Symbols.index(Symbol), n, (Symbols.index(Symbol) / n) * 100), end='\n')
+    #     print('%d/%d - %.2f' % (Symbols.index(Symbol), n, (Symbols.index(Symbol) / n) * 100) + '%')
+    #     df[Symbol] = GetPortfoliosInfo(Symbol)
+    for i in range(n):
+        print('%d/%d - %.2f' % (i, n, (i / n) * 100) + '%')
+        df[Symbols[i]] = GetPortfoliosInfo(Symbols[i])
     df = DataFrame(df).T
     # df = DataFrame(df, index=col).T
     return df
