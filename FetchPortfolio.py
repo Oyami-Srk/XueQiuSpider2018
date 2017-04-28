@@ -329,10 +329,9 @@ def GetPortfolioInfo(Symbol):
     month_return = float(data[1][0].split('>')[4].split('%')[0]) / 100
     nav = float(data[2][0].split('>')[4].split('<')[0])  # 净值
     total_return = float(nav - 1)
-    # Date
+    # 获取组合创建日
     c = re.compile('\d{4}-\d{2}-\d{2}')
     date = c.findall(cont.decode('utf-8'))[0]
-
     try:
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
@@ -363,7 +362,8 @@ def GetPortfolioInfo(Symbol):
         liquidity_3m = np.nan
         liquidity_12m = np.nan
 
-    return {'day_return': float('%.4f' % day_return),
+    return {'begin': date,
+            'day_return': float('%.4f' % day_return),
             'month_return': float('%.4f' % month_return),
             'nav': nav,
             'total_return': float('%.4f' % total_return),
@@ -372,12 +372,11 @@ def GetPortfolioInfo(Symbol):
             'turnover_3m': turnover_3m,
             'turnover_12m': turnover_12m,
             'liquidity_3m': liquidity_3m,
-            'liquidity_12m': liquidity_12m,
-            'begin': date
+            'liquidity_12m': liquidity_12m
             }
 
 def GetPortfoliosInfo(Symbols):
-    # col = ['day_return', 'month_return', 'nav', 'total_return', 'market', 'closed',
+    # col = ['begin', 'day_return', 'month_return', 'nav', 'total_return', 'market', 'closed',
     #        'turnover_3m', 'turnover_12m', 'liquidity_3m', 'liquidity_12m']
     df = {}
     n = len(Symbols)
