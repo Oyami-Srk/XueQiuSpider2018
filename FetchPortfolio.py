@@ -88,6 +88,9 @@ def GetRateChartsAsDataframe(Symbols, noPercent = True, ErrorSymbol = []):
     for Symbol in Symbols:
         try:
             Charts.append(GetRateChartAsDataframe(Symbol, noPercent))
+        except KeyboardInterrupt:
+            print('User Interrupt!')
+            break
         except:
             ErrorSymbol.append(Symbol)
     return Charts
@@ -102,6 +105,9 @@ def SaveRateChartsToHDF5(Symbols = [], Path = 'RateChart.h5', noPercent = True, 
     for Symbol in Symbols:
         try:
             SaveRateChartToHDF5(Symbol, Path, noPercent)
+        except KeyboardInterrupt:
+            print('User Interrupt!')
+            break
         except:
             ErrorSymbol.append(Symbol)
 
@@ -316,6 +322,9 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, Error
                 else:
                     if CheckPortfolioClosed(SecretCode) == False:
                         Tsil.append(SecretCode)
+        except KeyboardInterrupt:
+            print('User Interrupt!')
+            break
         except:
             ErrorSymbol.append(SecretCode)
         print(' [Done]')
@@ -398,6 +407,9 @@ def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
         try:
             df[Symbols[i]] = GetPortfoliosInfo(Symbols[i])
             print(' [Done]')
+        except KeyboardInterrupt:
+            print('User Interrupt!')
+            break
         except:
             ErrorSymbol.append(i)
     df = DataFrame(df).T
