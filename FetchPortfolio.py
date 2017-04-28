@@ -283,7 +283,7 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000):
     for neko in range(Min, Max + 1):
         # print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='')
         # print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='\n')
-        print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100) + '%')
+        print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100) + '%', end='')
         SecretCode = 'ZH' + '%.6d' % neko
         pmarket = GetPortfolioMarket(SecretCode)
         if pmarket == 'no_portfolio' or pmarket == 'undefined':
@@ -387,6 +387,7 @@ def GetPortfoliosInfo(Symbols):
     for i in range(n):
         print('%d/%d - %.2f' % (i, n, (i / n) * 100) + '%')
         df[Symbols[i]] = GetPortfoliosInfo(Symbols[i])
+        print(' [Done]')
     df = DataFrame(df).T
     # df = DataFrame(df, index=col).T
     return df
