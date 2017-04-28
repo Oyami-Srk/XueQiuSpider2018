@@ -31,6 +31,8 @@ def request(url, body = '', header = '', method = 'GET'):
         resp, content = httplib2.Http(timeout=20).request(url, method=method, headers=header,
                                                           body=urllib.parse.urlencode(body))
         return resp, content
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except KeyError:
         raise('Request Failed!')
 
@@ -41,6 +43,8 @@ def GetHeader():
     if Cookie_glo == '':
         try:
             resp, cont = request('https://xueqiu.com/', header=Header)
+        except KeyboardInterrupt:
+            print('User Interrupt!')
         except:
             raise Exception('无法连接！')
         Header['Cookie'] = resp['set-cookie']
@@ -56,6 +60,8 @@ def __GetRateChart__(Symbol):
     try:
         resp, cont = request(postUrl + 'cube_symbol=' + Symbol + '&until='
                              + str(int(time.time()) * 1000), header=Header)
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except:
         raise Exception('无法获取组合信息！')
     Data = json.loads(cont)[0]
@@ -141,12 +147,16 @@ def GetMarketList(market = 'cn',
     # Get TotlCount
     try:
         resp, cont = request(postUrl % 1, header = Header)
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except:
         raise Exception('网络错误！')
     TotalCount = json.loads(cont)['totalCount']
     List = []
     try:
         resp, cont = request(postUrl % TotalCount, header = Header)
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except:
         raise Exception('网络错误！')
     for item in json.loads(cont)['list']:
@@ -168,11 +178,15 @@ def __GetMarketListInfoViaMarketListsOriginDataWrittenInJsonAndReturnADataframeI
     # Get TotlCount
     try:
         resp, cont = request(postUrl % 1, header = Header)
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except:
         raise Exception('网络错误！')
     TotalCount = json.loads(cont)['totalCount']
     try:
         resp, cont = request(postUrl % TotalCount, header = Header)
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except:
         raise Exception('网络错误！')
     Symbol_list = []
@@ -216,6 +230,8 @@ def GetMarketListInfo(market = 'cn',
         postUrl = baseUrl % (i, 'turnover')
         try:
             resp, cont = request(postUrl, header = Header)
+        except KeyboardInterrupt:
+            print('User Interrupt!')
         except:
             raise Exception('网络错误！')
         rj = json.loads(cont)
@@ -228,6 +244,8 @@ def GetMarketListInfo(market = 'cn',
         postUrl = baseUrl % (i, 'liquidity')
         try:
             resp, cont = request(postUrl, header = Header)
+        except KeyboardInterrupt:
+            print('User Interrupt!')
         except:
             raise Exception('网络错误！')
         rj = json.loads(cont)
@@ -236,6 +254,7 @@ def GetMarketListInfo(market = 'cn',
             liquidity_12m_list.append(np.nan)
         else:
             liquidity_12m_list.append(rj['values'][2]['value'])
+
     oridata['turnover_3m'] = turnover_3m_list
     oridata['turnover_12m'] = turnover_12m_list
     oridata['liquidity_3m'] = liquidity_3m_list
@@ -258,8 +277,11 @@ def GetPortfolioMarket(Symbol):
     try:
         resp, cont = request(postUrl + 'cube_symbol=' + Symbol + '&until='
                              + str(int(time.time()) * 1000), header=Header)
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except:
         raise Exception('无法获取组合信息！')
+
     try:
         Data = json.loads(cont)[1]
     except:
@@ -279,6 +301,8 @@ def CheckPortfolioClosed(Symbol):
     Header = GetHeader()
     try:
         resp, cont = request(postUrl + Symbol, header = Header)
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except:
         raise Exception('无法获取组合信息！')
 
@@ -338,6 +362,8 @@ def GetPortfolioInfo(Symbol):
     Header = GetHeader()
     try:
         resp, cont = request(postUrl + Symbol, header = Header)
+    except KeyboardInterrupt:
+        print('User Interrupt!')
     except:
         raise Exception('无法获取组合信息！')
     c = re.compile('(<div (style="border:0;padding-left:0" |)'
@@ -354,6 +380,8 @@ def GetPortfolioInfo(Symbol):
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
             resp, cont = request(postUrl, header=Header)
+        except KeyboardInterrupt:
+            print('User Interrupt!')
         except:
             raise Exception('网络错误！')
         rj = json.loads(cont)
@@ -366,6 +394,8 @@ def GetPortfolioInfo(Symbol):
         postUrl = baseUrl % (Symbol, 'liquidity')
         try:
             resp, cont = request(postUrl, header=Header)
+        except KeyboardInterrupt:
+            print('User Interrupt!')
         except:
             raise Exception('网络错误！')
         rj = json.loads(cont)
