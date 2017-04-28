@@ -83,10 +83,13 @@ def __SaveAsDataframe__(Data, noPercent = True):
 def GetRateChartAsDataframe(Symbol, noPercent = True):
     return __SaveAsDataframe__(__GetRateChart__(Symbol), noPercent)
 
-def GetRateChartsAsDataframe(Symbols, noPercent = True):
+def GetRateChartsAsDataframe(Symbols, noPercent = True, ErrorSymbol = []):
     Charts = []
     for Symbol in Symbols:
-        Charts.append(GetRateChartAsDataframe(Symbol, noPercent))
+        try:
+            Charts.append(GetRateChartAsDataframe(Symbol, noPercent))
+        except:
+            ErrorSymbol.append(Symbol)
     return Charts
 
 def SaveRateChartToHDF5(Symbol, Path = 'RateChart.h5', noPercent = True):
@@ -95,9 +98,12 @@ def SaveRateChartToHDF5(Symbol, Path = 'RateChart.h5', noPercent = True):
         raise Exception('路径不能为空！')
     dataframe.to_hdf(Path, Symbol)
 
-def SaveRateChartsToHDF5(Symbols = [], Path = 'RateChart.h5', noPercent = True):
+def SaveRateChartsToHDF5(Symbols = [], Path = 'RateChart.h5', noPercent = True, ErrorSymbol = []):
     for Symbol in Symbols:
-        SaveRateChartToHDF5(Symbol, Path, noPercent)
+        try:
+            SaveRateChartToHDF5(Symbol, Path, noPercent)
+        except:
+            ErrorSymbol.append(Symbol)
 
 # # 读数据的一种方式
 # ZH002001 = pd.read_hdf('monthly_gain.h5', 'ZH002001')
@@ -278,37 +284,40 @@ def CheckPortfolioClosed(Symbol):
 # closed表明是否获取已关停的组合
 # Min 为穷举下限
 # Max 为穷举上限
-def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000):
+def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, ErrorSymbol = []):
     Tsil = []
     for neko in range(Min, Max + 1):
         # print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='')
         # print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='\n')
         print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100) + '%', end='')
         SecretCode = 'ZH' + '%.6d' % neko
-        pmarket = GetPortfolioMarket(SecretCode)
-        if pmarket == 'no_portfolio' or pmarket == 'undefined':
-            print(' [Done]')
-            continue
-        if market.strip() != '':
-            if closed == True:
-                if market == pmarket:
+        try:
+            pmarket = GetPortfolioMarket(SecretCode)
+            if pmarket == 'no_portfolio' or pmarket == 'undefined':
+                print(' [Done]')
+                continue
+            if market.strip() != '':
+                if closed == True:
+                    if market == pmarket:
+                        Tsil.append(SecretCode)
+                    else:
+                        print(' [Done]')
+                        continue
+                else:
+                    if market == pmarket:
+                        if CheckPortfolioClosed(SecretCode) == False:
+                            Tsil.append(SecretCode)
+                    else:
+                        print(' [Done]')
+                        continue
+            else:
+                if closed == True:
                     Tsil.append(SecretCode)
                 else:
-                    print(' [Done]')
-                    continue
-            else:
-                if market == pmarket:
                     if CheckPortfolioClosed(SecretCode) == False:
                         Tsil.append(SecretCode)
-                else:
-                    print(' [Done]')
-                    continue
-        else:
-            if closed == True:
-                Tsil.append(SecretCode)
-            else:
-                if CheckPortfolioClosed(SecretCode) == False:
-                    Tsil.append(SecretCode)
+        except:
+            ErrorSymbol.append(SecretCode)
         print(' [Done]')
 
     return Tsil
@@ -375,7 +384,7 @@ def GetPortfolioInfo(Symbol):
             'liquidity_12m': liquidity_12m
             }
 
-def GetPortfoliosInfo(Symbols):
+def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
     # col = ['begin', 'day_return', 'month_return', 'nav', 'total_return', 'market', 'closed',
     #        'turnover_3m', 'turnover_12m', 'liquidity_3m', 'liquidity_12m']
     df = {}
@@ -386,8 +395,11 @@ def GetPortfoliosInfo(Symbols):
     #     df[Symbol] = GetPortfoliosInfo(Symbol)
     for i in range(n):
         print('%d/%d - %.2f' % (i, n, (i / n) * 100) + '%')
-        df[Symbols[i]] = GetPortfoliosInfo(Symbols[i])
-        print(' [Done]')
+        try:
+            df[Symbols[i]] = GetPortfoliosInfo(Symbols[i])
+            print(' [Done]')
+        except:
+            ErrorSymbol.append(i)
     df = DataFrame(df).T
     # df = DataFrame(df, index=col).T
     return df
