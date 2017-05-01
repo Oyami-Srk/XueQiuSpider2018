@@ -310,6 +310,21 @@ def CheckPortfolioClosed(Symbol):
         return True
     return False
 
+# 检查是否访问频繁
+def CheckifCaptcha():
+    postUrl = 'https://xueqiu.com/'
+    Header = GetHeader()
+    try:
+        resp, cont = request(postUrl, header=Header)
+    except:
+        raise Exception('无法获取组合信息！')
+
+
+    print(resp)
+    if 'Location' in resp.keys() == True:
+        return True
+    return False
+
 # market标明要获取的List位于何市场, 若为空则不限市场
 # closed表明是否获取已关停的组合
 # Min 为穷举下限
@@ -322,7 +337,12 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, Error
         print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100) + '%', end='')
         SecretCode = 'ZH' + '%.6d' % neko
         try:
+            ifCaptcha = CheckifCaptcha()
+            if ifCaptcha == True:
+                return Tsil
+
             pmarket = GetPortfolioMarket(SecretCode)
+            print(' ' + SecretCode + ':' + pmarket, end = '')
             if pmarket == 'no_portfolio' or pmarket == 'undefined':
                 print(' [Done]')
                 continue
@@ -348,9 +368,10 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, Error
                         Tsil.append(SecretCode)
         except KeyboardInterrupt:
             print('User Interrupt!')
-            break
+            return Tsil
         except:
             ErrorSymbol.append(SecretCode)
+
         print(' [Done]')
 
     return Tsil
