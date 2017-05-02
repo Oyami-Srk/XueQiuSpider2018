@@ -48,20 +48,20 @@ if __name__ == '__main__':
         SaveRateChartsToHDF5(GetMarketList(), filename + '.h5', noPercent)
         print('下载完毕。')
         quit()
-    print('下载单个组合吗？(Y/N) ', end='')
-    key = input()
-    if key == 'y' or key == 'Y':
-        print('请输入组合代码(以ZH开头)> ', end='')
-        symbol = input()
-        print('请输入保存的文件名(默认为RateChart)> ', end='')
-        filename = input()
-        print('开始下载。')
-        if filename == '':
-            SaveRateChartToHDF5(symbol, 'RateChart.h5', noPercent)
-        else:
-            SaveRateChartToHDF5(symbol, filename + '.h5', noPercent)
-        print('下载完毕。')
-        quit()
+    # print('下载单个组合吗？(Y/N) ', end='')
+    # key = input()
+    # if key == 'y' or key == 'Y':
+    #     print('请输入组合代码(以ZH开头)> ', end='')
+    #     symbol = input()
+    #     print('请输入保存的文件名(默认为RateChart)> ', end='')
+    #     filename = input()
+    #     print('开始下载。')
+    #     if filename == '':
+    #         SaveRateChartToHDF5(symbol, 'RateChart.h5', noPercent)
+    #     else:
+    #         SaveRateChartToHDF5(symbol, filename + '.h5', noPercent)
+    #     print('下载完毕。')
+    #     quit()
     print('组合列表从市场获取吗？(Y/N) ', end='')
     key = input()
     if key == 'y' or key == 'Y':
@@ -105,18 +105,33 @@ if __name__ == '__main__':
         SaveRateChartsToHDF5(GetMarketList(market, profit, sort, sf, sp), filename + '.h5', noPercent)
         print('下载完毕。')
         quit()
-    print('请输入组合代码列表(以逗号分隔)：')
-    symbol_list = []
-    symbol_list_input = input()
-    for symbol in symbol_list_input.split(','):
-        symbol_list.append(symbol)
-    if symbol_list == [] or symbol_list == ['']:
-        print('空输入！')
-        quit()
-    print('请输入保存的文件名(默认为RateChart)> ', end='')
-    filename = input()
-    if filename == '':
-        filename = 'RateChart'
-    print('开始下载。')
-    SaveRateChartsToHDF5(symbol_list, filename + '.h5', noPercent)
-    print('下载完毕。')
+    # print('请输入组合代码列表(以逗号分隔)：')
+    # symbol_list = []
+    # symbol_list_input = input()
+    # for symbol in symbol_list_input.split(','):
+    #     symbol_list.append(symbol)
+    # if symbol_list == [] or symbol_list == ['']:
+    #     print('空输入！')
+    #     quit()
+    # print('请输入保存的文件名(默认为RateChart)> ', end='')
+    # filename = input()
+    # if filename == '':
+    #     filename = 'RateChart'
+    # print('开始下载。')
+    # SaveRateChartsToHDF5(symbol_list, filename + '.h5', noPercent)
+    # print('下载完毕。')
+
+    # 组合
+    ZH_list = GetAllPortfolio(market='cn', closed=False, Min=0, Max=1300000)
+    # import pickle
+    # file = open('ZH_list.txt', 'w')
+    # pickle.dump(list, file)  # 序列化
+    # file.close()
+    # # list = pickle.load(file('ZH_list.txt', 'r'))  # 反序列化
+    import json
+    with open('ZH_list.json', 'w') as f:
+        json.dump(ZH_list, f)
+    # with open('ZH_list.json', 'r') as f:
+    #     ZH_list = json.load(f)
+
+

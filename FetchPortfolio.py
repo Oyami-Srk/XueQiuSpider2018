@@ -108,9 +108,12 @@ def SaveRateChartToHDF5(Symbol, Path = 'RateChart.h5', noPercent = True):
     dataframe.to_hdf(Path, Symbol)
 
 def SaveRateChartsToHDF5(Symbols = [], Path = 'RateChart.h5', noPercent = True, ErrorSymbol = []):
+    n = len(Symbols)
     for Symbol in Symbols:
+        print('%d/%d - %.2f' % (Symbols.index(Symbol), n, (Symbols.index(Symbol) / n) * 100) + '%')
         try:
             SaveRateChartToHDF5(Symbol, Path, noPercent)
+            print(' [Done]')
         except KeyboardInterrupt:
             print('\nUser Interrupt!\n')
             break
