@@ -403,7 +403,7 @@ def GetPortfolioInfo(Symbol):
     month_return = float(data[1][0].split('>')[4].split('%')[0]) / 100
     nav = float(data[2][0].split('>')[4].split('<')[0])  # 净值
     total_return = float(nav - 1)
-    # 获取组合创建日S
+    # 获取组合创建日
     c = re.compile('\d{4}-\d{2}-\d{2}')
     date = c.findall(cont.decode('utf-8'))[0]
     try:
