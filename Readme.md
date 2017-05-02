@@ -15,58 +15,58 @@ To make everything easy, I will descrirbe all functions with no **__** at the be
 (Using the same pattern can make description more understandable.)  
 
 * FunctionToDo  (TODO)  
-    Param:  
+    * Param:  
         1. xxxxxx(... default=...): ...  
         2. blabla(...): ...  
-    Return:  
+    * Return:  
         ...  
-    Comment:  
+    * Comment:  
         ...  
 
 ## FetchPortfolio.py:  
   
 * GetRateChartAsDataframe  
-    Param:   
+    * Param:   
         1. Symbol(str): Portfolio's symbol, like 'ZH123456'. (The same below)  
         2. noPercent(bool default=True): If that's True, spider won't get percent in rate chart.   
-    Return:  
+    * Return:  
         A dataframe which carries a single portfolio's everyday value and percent(if you set noPercent False)  
-    Comment:  
+    * Comment:  
         
 * GetRateChartsAsDataframe  
-    Plural form of GetRateChartAsDataframe  
-    Param:   
+    * Plural form of GetRateChartAsDataframe  
+    * Param:   
         1. Symbols(list of strs): Portfolio's symbols, like ['ZH123456', 'ZH654321']. (The same below)  
         2. noPercent(bool default=True)  
-    Return:  
+    * Return:  
         A dataframe which carries portfolios' everyday value and percent(if you set noPercent False)  
-    Comment:  
+    * Comment:  
         Function which has the same name as other but a 's' does the same thing but reciving a list(names xxxx*s*) return a list or a dataframe carries complex sheets. Those functions are called 'Plural form'.  
     
 * SaveRateChartToHDF5  
-    Saver form of GetRateChartAsDataframe, default="RateChart.h5"  
-    Param:  
+    * Saver form of GetRateChartAsDataframe, default="RateChart.h5"  
+    * Param:  
         1. Symbol(str)  
         2. Path(str default="RateChart.h5"): The path of hdf5 file.  
         3. noPercent(bool default=True)  
-    Return:  
+    * Return:  
         No return  
-    Comment:  
+    * Comment:  
         Those functions which save the other function's return and simply append a parameter like 'filename/Path' are called 'Saver form'  
       
 * SaveRateChartsToHDF5  
-    Plural form of SaveRateChartToHDF5  
+    * Plural form of SaveRateChartToHDF5  
       
 * GetMarketList  
-    Param:  
+    * Param:  
         1. market(str default='cn')  
         2. profit(str default='monthly_gain')  
         3. sort(str default='best_benefit')  
         4. sale_flag(**str** default='0')  
         5. stock_posistions(**str** default='0')  
-    Return:  
+    * Return:  
         A list of orderly portfolios' symbols.  
-    Comment:  
+    * Comment:  
         Param "market": cn/us/hk  
         Param "profit": monthly_gain/daily_gain/annualized_gain_rate  
         Param "sort": best_benefit/grow_fast/win_market  
@@ -74,52 +74,52 @@ To make everything easy, I will descrirbe all functions with no **__** at the be
         Param "stock_positions": Filter out portfolio with single stock(1) or not(0)  
       
 * GetMarketListInfo  
-    Param:  
+    * Param:  
         1. market(str default='cn')  
         2. profit(str default='monthly_gain')  
         3. sort(str default='best_benefit')  
         4. sale_flag(**str** default='0')  
         5. stock_posistions(**str** default='0')  
-    Return:  
+    * Return:  
         A dataframe which carries the informations about every portfolios in Market list.  
-    Comment:  
+    * Comment:  
         See also GetMarketList  
           
 * SaveMarketListInfo  
-    Saver form of GetMarketListInfo, default='portfolio_summary.h5'  
+    * Saver form of GetMarketListInfo, default='portfolio_summary.h5'  
       
 * GetPortfolioMarket  
-    Param:  
+    * Param:  
         1. Symbol(str)  
-    Return:  
+    * Return:  
         A string of market symbol.  
-    Comment:  
+    * Comment:  
       
 * CheckPortfolioClosed  
-    Param:  
+    * Param:  
         1. Symbol  
-    Return:  
+    * Return:  
         A bool value of whether portfolio is cloesd(True) or not(False)  
-    Comment:   
+    * Comment:   
       
 * GetAllPortfolio  
-    Param:  
+    * Param:  
         1. market(str default='cn')  
         2. closed(bool default=False)  
         3. Min(int default=0)  
         4. Max(int default=1300000)  
-    Return:  
+    * Return:  
         A list of all eligible portfolio.  
-    Comment:  
+    * Comment:  
         100 portfolios will take 30 seconds.   
           
 * GetPortfolioInfo  
-    Param:  
+    * Param:  
         1. Symbol(str)  
-    Return:  
+    * Return:  
         A dictionary which carries information about portfolio.  
-    Comment:  
-        `  
+    * Comment:  
+        ```
         return {'day': day,  
                 'month': month,  
                 'net': net,  
@@ -131,7 +131,7 @@ To make everything easy, I will descrirbe all functions with no **__** at the be
                 'liquidity_3m': liquidity_3m,  
                 'liquidity_12m': liquidity_12m  
                 }  
-        `
+        ```
 
 * GetPortfoliosInfo
-    Plural form of GetPortfolioInfo
+    * Plural form of GetPortfolioInfo
