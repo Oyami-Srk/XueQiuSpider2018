@@ -159,7 +159,6 @@ def GetMarketList(market = 'cn',
         raise KeyboardInterrupt()
     except:
         raise Exception('网络错误！')
-
     for item in json.loads(cont)['list']:
         List.append(item['symbol']) 
     return List
@@ -190,7 +189,6 @@ def __GetMarketListInfoViaMarketListsOriginDataWrittenInJsonAndReturnADataframeI
         raise KeyboardInterrupt()
     except:
         raise Exception('网络错误！')
-
     Symbol_list = []
     DailyGain_list = []
     MonthlyGain_list = []
@@ -237,7 +235,6 @@ def GetMarketListInfo(market = 'cn',
             break
         except:
             raise Exception('网络错误！')
-
         rj = json.loads(cont)
         turnover_3m_list.append(rj['values'][0]['value'])
         if len(rj['values']) < 5:
@@ -246,7 +243,6 @@ def GetMarketListInfo(market = 'cn',
             turnover_12m_list.append(rj['values'][2]['value'])
 
         postUrl = baseUrl % (i, 'liquidity')
-
         try:
             resp, cont = request(postUrl, header = Header)
         except KeyboardInterrupt:
@@ -254,14 +250,12 @@ def GetMarketListInfo(market = 'cn',
             break
         except:
             raise Exception('网络错误！')
-
         rj = json.loads(cont)
         liquidity_3m_list.append(rj['values'][0]['value'])
         if len(rj['values']) < 5:
             liquidity_12m_list.append(np.nan)
         else:
             liquidity_12m_list.append(rj['values'][2]['value'])
-
     oridata['turnover_3m'] = turnover_3m_list
     oridata['turnover_12m'] = turnover_12m_list
     oridata['liquidity_3m'] = liquidity_3m_list
@@ -288,7 +282,6 @@ def GetPortfolioMarket(Symbol):
         raise KeyboardInterrupt()
     except:
         raise Exception('无法获取组合信息！')
-
     try:
         Data = json.loads(cont)[1]
     except:
@@ -327,8 +320,6 @@ def CheckifCaptcha():
         raise KeyboardInterrupt()
     except:
         raise Exception('无法获取组合信息！')
-
-
     # print(resp)
     if 'Location' in resp.keys() == True:
         return True
@@ -349,9 +340,8 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, Error
             ifCaptcha = CheckifCaptcha()
             if ifCaptcha == True:
                 return Tsil
-
             pmarket = GetPortfolioMarket(SecretCode)
-            print(' ' + SecretCode + ':' + pmarket, end = '')
+            print(' ' + SecretCode + ':' + pmarket, end='')
             if pmarket == 'no_portfolio' or pmarket == 'undefined':
                 print(' [Done]')
                 continue
@@ -380,7 +370,6 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, Error
         except KeyboardInterrupt:
             print('\nUser Interrupt!\n')
             break
-
         print(' [Done]')
 
     return Tsil
@@ -465,7 +454,7 @@ def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
     for i in range(n):
         print('%d/%d - %.2f' % (i, n, (i / n) * 100) + '%')
         try:
-            df[Symbols[i]] = GetPortfoliosInfo(Symbols[i])
+            df[Symbols[i]] = GetPortfolioInfo(Symbols[i])
             print(' [Done]')
         except KeyboardInterrupt:
             print('User Interrupt!')
