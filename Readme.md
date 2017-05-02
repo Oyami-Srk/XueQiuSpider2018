@@ -119,7 +119,10 @@ To make everything easy, I will descrirbe all functions with no **__** at the be
     * Return:  
         A dictionary which carries information about portfolio.  
     * Comment:  
-        ```
+
+```
+#!python
+
         return {'day': day,  
                 'month': month,  
                 'net': net,  
@@ -131,7 +134,11 @@ To make everything easy, I will descrirbe all functions with no **__** at the be
                 'liquidity_3m': liquidity_3m,  
                 'liquidity_12m': liquidity_12m  
                 }  
-        ```
+
+
+```
+
+
 
 * GetPortfoliosInfo
     * Plural form of GetPortfolioInfo
