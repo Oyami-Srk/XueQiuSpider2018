@@ -10,6 +10,8 @@ def GetStock(Symbol):
     Header = GetHeader()
     try:
         resp, cont = request(postUrl + Symbol, header=Header)
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt()
     except:
         raise Exception('无法获取组合信息！')
 
