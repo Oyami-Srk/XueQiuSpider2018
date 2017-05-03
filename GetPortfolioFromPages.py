@@ -24,6 +24,18 @@ def GetPortfolioFromPage(url):
             List.append(symbol)
     return List
 
+def GetPortfoliosFromPages(Symbols):
+    PF_List = []
+    n = len(Symbols)
+    for Symbol in Symbols:
+        print('%d/%d - %.2f' % (Symbols.index(Symbol), n, (Symbols.index(Symbol) / n) * 100) + '%')
+        try:
+            PF_List.append(GetPortfolioFromPage(Symbol))
+            print(' [Done]')
+        except:
+            raise Exception('无法获取信息！')
+    return PF_List
+
 # 返回一个储存用户的所有帖子中所有匹配regx的地址, 可直接用于GetPortfolioFromPage
 def GetPagesUrl(regx = ''):
     base = 'https://xueqiu.com/v4/statuses/user_timeline.json?user_id=5171159182&page='
@@ -41,10 +53,10 @@ def GetPagesUrl(regx = ''):
         raise Exception('无法获取用户帖子信息！')
 
     Data = json.loads(cont)
-    max = Data['maxPage']
+    maxPage = Data['maxPage']
     List = []
 
-    for i in range(0, max + 1):
+    for i in range(0, maxPage + 1):
         try:
             resp, cont = request(base + str(i), header=Header)
         except KeyboardInterrupt:
