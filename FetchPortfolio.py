@@ -403,6 +403,10 @@ def GetPortfolioInfo(Symbol):
     LastUpdate = c.findall(cont.decode('utf-8'))[0]
     c = re.compile('\d{4}\.\d{1,2}\.\d{1,2}')
     LastUpdate = c.findall(LastUpdate)[0]
+    # 获取组合名称
+    c = re.compile('"name":"\S{2,}","symbol"')
+    name = c.findall(cont.decode('utf-8'))[0]
+    name = name[8:-10]
     try:
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
@@ -448,7 +452,8 @@ def GetPortfolioInfo(Symbol):
             'turnover_12m': turnover_12m,
             'liquidity_3m': liquidity_3m,
             'liquidity_12m': liquidity_12m,
-            'LastUpdate': LastUpdate
+            'LastUpdate': LastUpdate,
+            'name': name
             }
 
 def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
