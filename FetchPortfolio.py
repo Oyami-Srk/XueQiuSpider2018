@@ -398,6 +398,11 @@ def GetPortfolioInfo(Symbol):
     # 获取组合创建日
     c = re.compile('\d{4}-\d{2}-\d{2}')
     date = c.findall(cont.decode('utf-8'))[0]
+    # 获取最新调仓时间
+    c = re.compile('\d{4}\.\d{1,2}\.\d{1,2}\s\d{2}:\d{2}')
+    LastUpdate = c.findall(cont.decode('utf-8'))[0]
+    c = re.compile('\d{4}\.\d{1,2}\.\d{1,2}')
+    LastUpdate = c.findall(LastUpdate)[0]
     try:
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
@@ -442,7 +447,8 @@ def GetPortfolioInfo(Symbol):
             'turnover_3m': turnover_3m,
             'turnover_12m': turnover_12m,
             'liquidity_3m': liquidity_3m,
-            'liquidity_12m': liquidity_12m
+            'liquidity_12m': liquidity_12m,
+            'LastUpdate': LastUpdate
             }
 
 def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
