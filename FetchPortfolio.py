@@ -343,9 +343,12 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, Error
         print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100) + '%', end='')
         SecretCode = 'ZH' + '%.6d' % neko
         try:
-            # ifCaptcha = CheckifCaptcha()
-            # if ifCaptcha == True:
-            #    return Tsil
+            ifCaptcha = CheckifCaptcha()
+            while(ifCaptcha == True):
+                print("Please Enter the code in XUEQIU in your local browser And input anything to continue if you can make sure XUEQIU is available.(Please open a new tab and enter the http://xueqiu.com/ manually after enter the code)")
+                key = input()
+                ifCaptcha = CheckifCaptcha()
+
             pmarket = GetPortfolioMarket(SecretCode)
             print(' ' + SecretCode + ':' + pmarket, end='')
             if pmarket == 'no_portfolio' or pmarket == 'undefined':
