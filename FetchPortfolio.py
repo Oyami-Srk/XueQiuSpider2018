@@ -340,9 +340,9 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, Error
         print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100) + '%', end='')
         SecretCode = 'ZH' + '%.6d' % neko
         try:
-            ifCaptcha = CheckifCaptcha()
-            if ifCaptcha == True:
-                return Tsil
+            # ifCaptcha = CheckifCaptcha()
+            # if ifCaptcha == True:
+            #    return Tsil
             pmarket = GetPortfolioMarket(SecretCode)
             print(' ' + SecretCode + ':' + pmarket, end='')
             if pmarket == 'no_portfolio' or pmarket == 'undefined':
