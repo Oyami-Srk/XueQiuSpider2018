@@ -112,6 +112,9 @@ def SaveRateChartsToHDF5(Symbols = [], Path = 'RateChart.h5', noPercent = True, 
     for Symbol in Symbols:
         print('%d/%d - %.2f' % (Symbols.index(Symbol), n, (Symbols.index(Symbol) / n) * 100) + '%')
         try:
+            ifCaptcha = CheckifCaptcha()
+            if ifCaptcha == True:
+                time.sleep(3)
             SaveRateChartToHDF5(Symbol, Path, noPercent)
             print(' [Done]')
         except KeyboardInterrupt:
@@ -468,13 +471,16 @@ def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
     for i in range(n):
         print('%d/%d - %.2f' % (i, n, (i / n) * 100) + '%')
         try:
+            ifCaptcha = CheckifCaptcha()
+            if ifCaptcha == True:
+                time.sleep(3)
             df[Symbols[i]] = GetPortfolioInfo(Symbols[i])
             print(' [Done]')
         except KeyboardInterrupt:
             print('User Interrupt!')
             break
         except:
-            ErrorSymbol.append(i)
-    df = DataFrame(df).T
-    # df = DataFrame(df, index=col).T
+            ErrorSymbol.append(Symbols[i])
+    # df = DataFrame(df).T
+    # # df = DataFrame(df, index=col).T
     return df
