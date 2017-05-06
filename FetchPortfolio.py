@@ -113,8 +113,12 @@ def SaveRateChartsToHDF5(Symbols = [], Path = 'RateChart.h5', noPercent = True, 
         print('%d/%d - %.2f' % (Symbols.index(Symbol), n, (Symbols.index(Symbol) / n) * 100) + '%')
         try:
             ifCaptcha = CheckifCaptcha()
-            if ifCaptcha == True:
-                time.sleep(3)
+            while (ifCaptcha == True):
+                print('Please Enter the CAPTCHA of XUEQIU in your local browser and '
+                      'input anything to continue if you make sure XUEQIU is available. '
+                      '(Please open http://xueqiu.com/ manually after enter the CAPTCHA)')
+                key = input()
+                ifCaptcha = CheckifCaptcha()
             SaveRateChartToHDF5(Symbol, Path, noPercent)
             print(' [Done]')
         except KeyboardInterrupt:
@@ -327,14 +331,17 @@ def CheckifCaptcha():
     except:
         raise Exception('无法获取组合信息！')
     # print(resp)
-    if 'Location' in resp.keys() == True:
+    # c = re.compile('系统检测到您的IP最近访问过于频繁')
+    # if len(c.findall(cont.decode('utf-8'))) >= 0:
+    if resp.get('content-location') == 'https://xueqiu.com/service/captcha':
+    # if 'Location' in resp.keys() == True:
         return True
     return False
 
 # market标明要获取的List位于何市场, 若为空则不限市场
 # closed表明是否获取已关停的组合
-# Min 为穷举下限
-# Max 为穷举上限
+# Min为穷举下限
+# Max为穷举上限
 def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, ErrorSymbol = []):
     Tsil = []
     for neko in range(Min, Max + 1):
@@ -344,11 +351,12 @@ def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, Error
         SecretCode = 'ZH' + '%.6d' % neko
         try:
             ifCaptcha = CheckifCaptcha()
-            while(ifCaptcha == True):
-                print("Please Enter the code in XUEQIU in your local browser And input anything to continue if you can make sure XUEQIU is available.(Please open a new tab and enter the http://xueqiu.com/ manually after enter the code)")
+            while (ifCaptcha == True):
+                print('Please Enter the CAPTCHA of XUEQIU in your local browser and '
+                      'input anything to continue if you make sure XUEQIU is available. '
+                      '(Please open http://xueqiu.com/ manually after enter the CAPTCHA)')
                 key = input()
                 ifCaptcha = CheckifCaptcha()
-
             pmarket = GetPortfolioMarket(SecretCode)
             print(' ' + SecretCode + ':' + pmarket, end='')
             if pmarket == 'no_portfolio' or pmarket == 'undefined':
@@ -407,12 +415,20 @@ def GetPortfolioInfo(Symbol):
     # 获取最新调仓时间
     c = re.compile('\d{4}\.\d{1,2}\.\d{1,2}\s\d{2}:\d{2}')
     LastUpdate = c.findall(cont.decode('utf-8'))[0]
-    c = re.compile('\d{4}\.\d{1,2}\.\d{1,2}')
-    LastUpdate = c.findall(LastUpdate)[0]
+    # c = re.compile('\d{4}\.\d{1,2}\.\d{1,2}')
+    # LastUpdate = c.findall(LastUpdate)[0]
+    LastUpdate = LastUpdate.split(' ')[0]
     # 获取组合名称
     c = re.compile('"name":"\S{2,}","symbol"')
     name = c.findall(cont.decode('utf-8'))[0]
     name = name[8:-10]
+    # 获取现金比例
+    c = re.compile('"segment-weight weight">\S{5,}</span></div></div><div class="history-list">')
+    # c = re.compile('\S{5,}</span></div></div><div class="history-list">')
+    cash_ratio = c.findall(cont.decode('utf-8'))[0]
+    # c = re.compile('\d{1,}\.\d{2}')
+    # cash_ratio = float(c.findall(cash_ratio)[0]) / 100
+    cash_ratio = float(cash_ratio.split('>')[1].split('%')[0]) / 100
     try:
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
@@ -459,7 +475,8 @@ def GetPortfolioInfo(Symbol):
             'liquidity_3m': liquidity_3m,
             'liquidity_12m': liquidity_12m,
             'LastUpdate': LastUpdate,
-            'name': name
+            'name': name,
+            'cash_ratio': cash_ratio,
             }
 
 def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
@@ -475,8 +492,12 @@ def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
         print('%d/%d - %.2f' % (i, n, (i / n) * 100) + '%')
         try:
             ifCaptcha = CheckifCaptcha()
-            if ifCaptcha == True:
-                time.sleep(3)
+            while (ifCaptcha == True):
+                print('Please Enter the CAPTCHA of XUEQIU in your local browser and '
+                      'input anything to continue if you make sure XUEQIU is available. '
+                      '(Please open http://xueqiu.com/ manually after enter the CAPTCHA)')
+                key = input()
+                ifCaptcha = CheckifCaptcha()
             df[Symbols[i]] = GetPortfolioInfo(Symbols[i])
             print(' [Done]')
         except KeyboardInterrupt:
