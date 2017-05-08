@@ -13,6 +13,8 @@ from pandas import Series, DataFrame
 
 Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
 
+proxies = {'http': 'socks5://127.0.0.1:1086'}
+
 baseHeader = {
     'Host': 'xueqiu.com',
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0) Gecko/20100101 Firefox/52.0',
@@ -26,7 +28,7 @@ baseHeader = {
 }
 
 # 祖传request, 从py2升级而来
-def request(url, body = '', header = '', method = 'GET'):
+def __request(url, body = '', header = '', method = 'GET'):
     try:
         resp, content = httplib2.Http(timeout=20).request(url, method=method, headers=header,
                                                           body=urllib.parse.urlencode(body))
@@ -35,6 +37,24 @@ def request(url, body = '', header = '', method = 'GET'):
         raise KeyboardInterrupt()
     except KeyError:
         raise('Request Failed!')
+
+# new!
+import requests
+def request(url, body = {}, header = {}, method = 'GET'):
+    try:
+        if method.upper() == 'GET':
+            r = requests.get(url, data=body, headers=header, proxies=proxies)
+        elif method.upper() == 'POST':
+            r = requests.post(url, data=body, headers=header, proxies=proxies)
+        if r.status_code != 200:
+            raise Exception('Not 200!')
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt()
+    except:
+        raise Exception('Connect Error!')
+
+    return r.headers, r.content
+
 
 def GetHeader():
     global baseHeader
