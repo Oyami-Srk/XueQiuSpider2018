@@ -12,7 +12,7 @@ import json, re
 import numpy as np
 from pandas import Series, DataFrame
 
-proxies = {'http': 'socks5://127.0.0.1:1234'}
+proxies = {'http': 'socks5://127.0.0.1:1086', 'https': 'socks5://127.0.0.1:1086'}
 sleeptime = 1    # 休眠时间（单位秒）
 
 Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
@@ -58,6 +58,11 @@ def request(url, body = {}, header = {}, method = 'GET'):
     except:
         raise Exception('Connect Error!')
     return r.headers, r.content
+
+def GetClientIP():
+    Data = request('http://ip.chinaz.com/getip.aspx')[1].decode('utf-8')
+    print('IP: ' + Data.split('\'')[1])
+    print('Address: ' + Data.split('\'')[3])
 
 def GetHeader():
     global baseHeader
