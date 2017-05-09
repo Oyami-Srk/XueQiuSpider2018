@@ -4,20 +4,26 @@
 #You need HDF5 support to run this script
 #Follow the installation guide in https://github.com/PyTables/PyTables/ may help you a lot
 
-import urllib, httplib2
+# import urllib, httplib2
+import requests
 import time
 import json, re
 # import pandas as pd
 import numpy as np
 from pandas import Series, DataFrame
 
-Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
+proxies = {'http': 'socks5://127.0.0.1:1234'}
+sleeptime = 1    # 休眠时间（单位秒）
 
-proxies = {'http': 'socks5://127.0.0.1:1086'}
+Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
 
 baseHeader = {
     'Host': 'xueqiu.com',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0) Gecko/20100101 Firefox/52.0',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0',
+    # 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) '
+    #               'Version/6.0 Mobile/10B350 Safari/8536.25',
+    # 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) '
+    #               'Chrome/52.0.2743.98 Mobile Safari/537.36',
     'Accept': '*/*',
     'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
     'Accept-Encoding': 'gzip, deflate, br',
@@ -27,19 +33,18 @@ baseHeader = {
     'Connection': 'keep-alive'
 }
 
-# 祖传request, 从py2升级而来
-def __request(url, body = '', header = '', method = 'GET'):
-    try:
-        resp, content = httplib2.Http(timeout=20).request(url, method=method, headers=header,
-                                                          body=urllib.parse.urlencode(body))
-        return resp, content
-    except KeyboardInterrupt:
-        raise KeyboardInterrupt()
-    except KeyError:
-        raise('Request Failed!')
+# # 祖传request, 从py2升级而来
+# def __request(url, body = '', header = '', method = 'GET'):
+#     try:
+#         resp, content = httplib2.Http(timeout=20).request(url, method=method, headers=header,
+#                                                           body=urllib.parse.urlencode(body))
+#         return resp, content
+#     except KeyboardInterrupt:
+#         raise KeyboardInterrupt()
+#     except KeyError:
+#         raise('Request Failed!')
 
 # new!
-import requests
 def request(url, body = {}, header = {}, method = 'GET'):
     try:
         if method.upper() == 'GET':
@@ -52,9 +57,7 @@ def request(url, body = {}, header = {}, method = 'GET'):
         raise KeyboardInterrupt()
     except:
         raise Exception('Connect Error!')
-
     return r.headers, r.content
-
 
 def GetHeader():
     global baseHeader
@@ -131,6 +134,7 @@ def SaveRateChartsToHDF5(Symbols = [], Path = 'RateChart.h5', noPercent = True, 
     n = len(Symbols)
     for Symbol in Symbols:
         print('%d/%d - %.2f' % (Symbols.index(Symbol), n, (Symbols.index(Symbol) / n) * 100) + '%')
+        time.sleep(sleeptime)
         try:
             ifCaptcha = CheckifCaptcha()
             while (ifCaptcha == True):
@@ -349,26 +353,29 @@ def CheckifCaptcha():
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
-        raise Exception('无法获取组合信息！')
+        raise Exception('无法访问！')
     # print(resp)
     # c = re.compile('系统检测到您的IP最近访问过于频繁')
     # if len(c.findall(cont.decode('utf-8'))) >= 0:
     if resp.get('content-location') == 'https://xueqiu.com/service/captcha':
+    # if 'content-location' in resp.keys() == True:
     # if 'Location' in resp.keys() == True:
         return True
     return False
 
+# ！危险！容易被封！
 # market标明要获取的List位于何市场, 若为空则不限市场
 # closed表明是否获取已关停的组合
 # Min为穷举下限
 # Max为穷举上限
-def GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, ErrorSymbol = []):
+def __GetAllPortfolio(market = 'cn', closed = False, Min = 0, Max = 1300000, ErrorSymbol = []):
     Tsil = []
     for neko in range(Min, Max + 1):
         # print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='')
         # print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100), end='\n')
         print('%d/%d - %.2f' % (neko, Max, ((neko - Min) / (Max - Min)) * 100) + '%', end='')
         SecretCode = 'ZH' + '%.6d' % neko
+        time.sleep(sleeptime)
         try:
             ifCaptcha = CheckifCaptcha()
             while (ifCaptcha == True):
@@ -441,14 +448,26 @@ def GetPortfolioInfo(Symbol):
     # 获取组合名称
     c = re.compile('"name":"\S{2,}","symbol"')
     name = c.findall(cont.decode('utf-8'))[0]
-    name = name[8:-10]
+    # name = name[8:-10]
+    name = name.split(',')[0].split(':')[1].split('"')[1]
     # 获取现金比例
-    c = re.compile('"segment-weight weight">\S{5,}</span></div></div><div class="history-list">')
+    # c = re.compile('"segment-weight weight">\S{5,}</span></div></div><div class="history-list">')
     # c = re.compile('\S{5,}</span></div></div><div class="history-list">')
-    cash_ratio = c.findall(cont.decode('utf-8'))[0]
-    # c = re.compile('\d{1,}\.\d{2}')
-    # cash_ratio = float(c.findall(cash_ratio)[0]) / 100
-    cash_ratio = float(cash_ratio.split('>')[1].split('%')[0]) / 100
+    c = re.compile('"name":"现金","weight":\S{3,},')
+    cash_ratio = c.findall(cont.decode('utf-8'))
+    if cash_ratio == []:
+        cash_ratio = 0
+    else:
+        # c = re.compile('\d{1,}\.\d{2}')
+        # cash_ratio = float(c.findall(cash_ratio[0])[0]) / 100
+        # cash_ratio = float(cash_ratio[0].split('>')[1].split('%')[0]) / 100
+        cash_ratio = float(cash_ratio[0].split(',')[1].split(':')[1]) / 100
+    # # 详细仓位
+    # c = re.compile('cubeTreeData = {\S{1,}}')
+    # position = c.findall(cont.decode('utf-8'))[0]
+    # position = position.split(' ')[2].replace('false', '"false"')
+    # position = eval(position)
+    # position = DataFrame(position).T
     try:
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
@@ -510,6 +529,7 @@ def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
     #     df[Symbol] = GetPortfoliosInfo(Symbol)
     for i in range(n):
         print('%d/%d - %.2f' % (i, n, (i / n) * 100) + '%')
+        time.sleep(sleeptime)
         try:
             ifCaptcha = CheckifCaptcha()
             while (ifCaptcha == True):
@@ -528,3 +548,15 @@ def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
     # df = DataFrame(df).T
     # # df = DataFrame(df, index=col).T
     return df
+
+# 压平多重嵌套的list
+def flat_list(the_list):
+    now = the_list[:]
+    res = []
+    while now:
+        head = now.pop(0)
+        if isinstance(head, list):
+            now = head+now
+        else:
+            res.append(head)
+    return res
