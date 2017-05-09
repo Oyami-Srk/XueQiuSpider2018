@@ -12,18 +12,19 @@ import json, re
 import numpy as np
 from pandas import Series, DataFrame
 
-proxies = {'http': 'socks5://127.0.0.1:1086', 'https': 'socks5://127.0.0.1:1086'}
+# proxies = {'http': 'socks5://127.0.0.1:1234'}
+proxies = {'http': 'socks5://127.0.0.1:1234', 'https': 'socks5://127.0.0.1:1234'}
 sleeptime = 1    # 休眠时间（单位秒）
 
 Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
 
 baseHeader = {
     'Host': 'xueqiu.com',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0',
+    # 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0',
     # 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) '
     #               'Version/6.0 Mobile/10B350 Safari/8536.25',
-    # 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) '
-    #               'Chrome/52.0.2743.98 Mobile Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/52.0.2743.98 Mobile Safari/537.36',
     'Accept': '*/*',
     'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
     'Accept-Encoding': 'gzip, deflate, br',
@@ -48,7 +49,7 @@ baseHeader = {
 def request(url, body = {}, header = {}, method = 'GET'):
     try:
         if method.upper() == 'GET':
-            r = requests.get(url, data=body, headers=header, proxies=proxies)
+            r = requests.get(url, data=body, headers=header, timeout=20, proxies=proxies)
         elif method.upper() == 'POST':
             r = requests.post(url, data=body, headers=header, proxies=proxies)
         if r.status_code != 200:
@@ -442,8 +443,11 @@ def GetPortfolioInfo(Symbol):
     nav = float(data[2][0].split('>')[4].split('<')[0])  # 净值
     total_return = float(nav - 1)
     # 获取组合创建日
-    c = re.compile('\d{4}-\d{2}-\d{2}')
+    # c = re.compile('\d{4}-\d{2}-\d{2}')
+    # date = c.findall(cont.decode('utf-8'))[1]
+    c = re.compile('"created_date_format":"\d{4}-\d{2}-\d{2}')
     date = c.findall(cont.decode('utf-8'))[0]
+    date = date.split('"')[3]
     # 获取最新调仓时间
     c = re.compile('\d{4}\.\d{1,2}\.\d{1,2}\s\d{2}:\d{2}')
     LastUpdate = c.findall(cont.decode('utf-8'))[0]
