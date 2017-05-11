@@ -13,6 +13,7 @@ import numpy as np
 from pandas import Series, DataFrame
 
 proxies = {'http': 'socks5://127.0.0.1:1086', 'https': 'socks5://127.0.0.1:1086'}
+#proxies = {}
 sleeptime = 1    # 休眠时间（单位秒）
 
 Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
@@ -360,11 +361,11 @@ def CheckifCaptcha():
     except:
         raise Exception('无法访问！')
     # print(resp)
-    # c = re.compile('系统检测到您的IP最近访问过于频繁')
-    # if len(c.findall(cont.decode('utf-8'))) >= 0:
-    if resp.get('content-location') == 'https://xueqiu.com/service/captcha':
+    c = re.compile('系统检测到您的IP最近访问过于频繁')
+    if len(c.findall(cont.decode('utf-8'))) > 0:
+    #if resp.get('content-location') == 'https://xueqiu.com/service/captcha':
     # if 'content-location' in resp.keys() == True:
-    # if 'Location' in resp.keys() == True:
+    #if 'Location' in resp.keys() == True:
         return True
     return False
 
