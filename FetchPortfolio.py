@@ -52,8 +52,6 @@ def request(url, body = {}, header = {}, method = 'GET'):
             r = requests.get(url, data=body, headers=header, timeout=20, proxies=proxies)
         elif method.upper() == 'POST':
             r = requests.post(url, data=body, headers=header, proxies=proxies)
-        if r.status_code != 200:
-            raise Exception('Not 200!')
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
