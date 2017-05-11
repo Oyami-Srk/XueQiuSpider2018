@@ -473,10 +473,23 @@ def GetPortfolioInfo(Symbol):
         cash_ratio = float(cash_ratio[0].split(',')[1].split(':')[1]) / 100
     # # 详细仓位
     # c = re.compile('cubeTreeData = {\S{1,}}')
-    # position = c.findall(cont.decode('utf-8'))[0]
-    # position = position.split(' ')[2].replace('false', '"false"')
-    # position = eval(position)
-    # position = DataFrame(position).T
+    # pos = c.findall(cont.decode('utf-8'))[0]
+    # pos = pos.split(' ')[2].replace('false', '"false"')
+    # pos = eval(pos)
+    # # position = DataFrame(['CNY', '现金', cash_ratio, np.nan],
+    # #                      index=['stock_symbol', 'stock_name', 'weight', 'segment_name']).T
+    # # for Symbol in pos.keys():
+    # #     segment = DataFrame(pos[Symbol]['stocks'])[['stock_symbol', 'stock_name', 'weight', 'segment_name']]
+    # #     position = pd.concat([position, segment])
+    # position = {'CNY': {'证券代码': 'CNY', '证券简称': '现金', '权重': cash_ratio, '分类': np.nan}}
+    # for Symbol in pos.keys():
+    #     for s in pos[Symbol]['stocks']:
+    #         secid = s['stock_symbol'][2:] + '.' + s['stock_symbol'][:2]
+    #         position[secid] = {'证券代码': secid,
+    #                            '证券简称': s['stock_name'],
+    #                            '权重': float('%.6f' % (s['weight'] / 100)),
+    #                            '分类': s['segment_name']}
+    # position = DataFrame(position, index=['证券代码', '证券简称', '权重', '分类']).T
     try:
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
