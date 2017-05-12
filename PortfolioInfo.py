@@ -102,6 +102,11 @@ def GetPortfolioHistories(Symbol):
             continue
 
         for i in item['rebalancing_histories']:
+            if i['prev_weight_adjusted'] == None:
+                i['prev_weight_adjusted'] = 0
+            if i['target_weight'] == None:
+                i['target_weight'] = 0
+
             Histories.append(
                 {
                     'Name': i['stock_name'],
@@ -116,3 +121,15 @@ def GetPortfolioHistories(Symbol):
     return Histories
 
     # Having a nice day......
+
+def ShowHistories(Histories):
+    for item in Histories:
+        print(time.strftime('%Y-%m-%d', time.localtime(item['Date']/1000)) + ': ', end='')
+        print(item['Name'] + '(' + item['Symbol'] + ')        ', end='')
+        print(('%.2f' % item['Prev']) + '%  --->  ' + ('%.2f' % item['Target']) + '%    ', end='')
+        if item['Category'] == 'user_rebalancing':
+            print('用户调仓')
+        elif item['Category'] == 'sys_rebalancing':
+            print('系统调仓(分红)')
+        else:
+            print('未知调仓 ' + item['Category'])
