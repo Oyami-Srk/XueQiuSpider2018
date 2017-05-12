@@ -5,6 +5,8 @@ from FetchPortfolio import request, GetHeader
 import re, json, time
 import numpy as np
 
+from xueqiu_login import login
+
 def GetPortfolioInfo(Symbol):
     postUrl = 'https://xueqiu.com/P/'
     Header = GetHeader()
@@ -42,6 +44,7 @@ def GetPortfolioInfo(Symbol):
         'Name': Obj_Info['name'],
         'Market': Obj_Info['market'],
         'begin': time.strftime('%Y-%m-%d', time.localtime(Obj_Info['created_at']/1000)),
+        'update': time.strftime('%Y-%m-%d', time.localtime(Obj_Info['sell_rebalancing']['updated_at']/1000)),
         'end': np.nan if Obj_Info['close_date']=='' else time.strftime('%Y-%m-%d', time.localtime(Obj_Info['close_date']/1000)),
         'gain':{
             'daily': Obj_Info['daily_gain'],
