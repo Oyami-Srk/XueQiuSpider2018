@@ -5,7 +5,7 @@ from FetchPortfolio import request, GetHeader
 import re, json, time
 import numpy as np
 
-from xueqiu_login import login
+from xueqiu_login import xueqiu_login
 
 def GetPortfolioInfo(Symbol):
     postUrl = 'https://xueqiu.com/P/'

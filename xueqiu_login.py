@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #! python3
 
-from FetchPortfolio import request, GetHeader
+from FetchPortfolio import request, GetHeader, SetCookie
 import re, hashlib
 
 def get_md5(password):
@@ -9,7 +9,8 @@ def get_md5(password):
     md5.update(password.encode())
     return md5.hexdigest().upper()
 
-def login(telephone, password):
+def xueqiu_login(telephone, password):
+    global Cookie_glo
     url = 'https://xueqiu.com/'
     headers = GetHeader()
     headers['Referer'] = "https://xueqiu.com/"
@@ -39,10 +40,11 @@ def login(telephone, password):
         return ''
     else:
         print('登录成功，你的用户 id 是：%s, 你的用户名是：%s' % (res[0]))
+        SetCookie(resp['Set-Cookie'])
         return resp['Set-Cookie']
 
 
 if __name__ == '__main__':
     telephone = ""
     password = ""
-    login(telephone, password)
+    xueqiu_login(telephone, password)

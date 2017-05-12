@@ -65,6 +65,10 @@ def GetClientIP():
     print('IP: ' + Data.split('\'')[1])
     print('Address: ' + Data.split('\'')[3])
 
+def SetCookie(cookie):
+    global Cookie_glo
+    Cookie_glo = cookie
+
 def GetHeader():
     global baseHeader
     global Cookie_glo
