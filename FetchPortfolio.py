@@ -12,15 +12,15 @@ import json, re
 import numpy as np
 from pandas import Series, DataFrame
 
-proxies = {}
-#proxies = {'http': 'socks5://127.0.0.1:1234', 'https': 'socks5://127.0.0.1:1234'}
+from private_data import proxies, agent
 sleeptime = 1    # 休眠时间（单位秒）
 
 Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
 
 baseHeader = {
     'Host': 'xueqiu.com',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0',
+    'User-Agent': agent,
+    # 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0',
     # 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) '
     #               'Version/6.0 Mobile/10B350 Safari/8536.25',
     # 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) '

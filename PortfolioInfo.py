@@ -5,9 +5,9 @@ from FetchPortfolio import request, GetHeader
 import re, json, time
 import numpy as np
 
-from xueqiu_login import xueqiu_login
+from xueqiu_login import AutoLogin, CheckLogin
 
-def GetPortfolioInfo(Symbol):
+def GetPortfolioDetails(Symbol):
     postUrl = 'https://xueqiu.com/P/'
     Header = GetHeader()
     try:
@@ -58,3 +58,61 @@ def GetPortfolioInfo(Symbol):
         'cash_ratio': cash_ratio
     }
     return Info
+
+def GetPortfolioHistories(Symbol):
+    if CheckLogin() == False:
+        try:
+            AutoLogin()
+        except KeyboardInterrupt:
+            raise KeyboardInterrupt()
+        except:
+            raise Exception("登陆错误!")
+    Header = GetHeader()
+    try:
+        resp, cont = request('https://xueqiu.com/cubes/rebalancing/history.json?count=50&page=%d&cube_symbol=%s' % (1, Symbol), header=Header)
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt()
+    except:
+        raise Exception("网络错误!")
+
+    data = json.loads(cont.decode('utf-8'))
+    DataList = data['list']
+    totalCount = data['totalCount']
+    PageCount = 1
+    for i in range(50, totalCount, 50):
+        PageCount = PageCount + 1
+        try:
+            resp, cont = request(
+                'https://xueqiu.com/cubes/rebalancing/history.json?count=50&page=%d&cube_symbol=%s' % (PageCount, Symbol),
+                header=Header)
+        except KeyboardInterrupt:
+            raise KeyboardInterrupt()
+        except:
+            raise Exception("网络错误!")
+        data = json.loads(cont.decode('utf-8'))
+        DataList.extend(data['list'])
+
+    Histories = []
+    for item in DataList:
+        # 这里加一个判断item['status']=='success'可以剔除已取消的调仓
+        # 这里通过item['category']可以判断是系统自动分红(sys_rebalancing)还是用户自己调仓(user_rebalancing)
+        # 通过item['created_at']可以获知调仓创建日期, 而item['updated_at']里面则是调仓执行日期(可能因为不是交易日而延迟?) 改值为Unix时间戳(ms)
+        # 遍历rebalancing_histories以获得调仓
+        if item['status'] == 'failed':
+            continue
+
+        for i in item['rebalancing_histories']:
+            Histories.append(
+                {
+                    'Name': i['stock_name'],
+                    'Symbol': i['stock_symbol'],
+                    'Prev': i['prev_weight_adjusted'],
+                    'Target': i['target_weight'],
+                    'Date': i['updated_at'],
+                    'Category': item['category']
+                }
+            )
+
+    return Histories
+
+    # Having a nice day......
