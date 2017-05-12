@@ -12,8 +12,8 @@ import json, re
 import numpy as np
 from pandas import Series, DataFrame
 
-# proxies = {'http': 'socks5://127.0.0.1:1234'}
-proxies = {'http': 'socks5://127.0.0.1:1234', 'https': 'socks5://127.0.0.1:1234'}
+proxies = {}
+#proxies = {'http': 'socks5://127.0.0.1:1234', 'https': 'socks5://127.0.0.1:1234'}
 sleeptime = 1    # 休眠时间（单位秒）
 
 Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
