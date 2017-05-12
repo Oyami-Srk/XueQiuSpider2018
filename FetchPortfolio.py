@@ -12,19 +12,19 @@ import json, re
 import numpy as np
 from pandas import Series, DataFrame
 
-proxies = {'http': 'socks5://127.0.0.1:1086', 'https': 'socks5://127.0.0.1:1086'}
-#proxies = {}
+# proxies = {'http': 'socks5://127.0.0.1:1234'}
+proxies = {'http': 'socks5://127.0.0.1:1234', 'https': 'socks5://127.0.0.1:1234'}
 sleeptime = 1    # 休眠时间（单位秒）
 
 Cookie_glo = ''  # 节约资源而来的保存第一次获取的cookie
 
 baseHeader = {
     'Host': 'xueqiu.com',
-    # 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0',
     # 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) '
     #               'Version/6.0 Mobile/10B350 Safari/8536.25',
-    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) '
-                  'Chrome/52.0.2743.98 Mobile Safari/537.36',
+    # 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) '
+    #               'Chrome/52.0.2743.98 Mobile Safari/537.36',
     'Accept': '*/*',
     'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
     'Accept-Encoding': 'gzip, deflate, br',
@@ -52,6 +52,8 @@ def request(url, body = {}, header = {}, method = 'GET'):
             r = requests.get(url, data=body, headers=header, timeout=20, proxies=proxies)
         elif method.upper() == 'POST':
             r = requests.post(url, data=body, headers=header, proxies=proxies)
+        # if r.status_code != 200:
+        #     raise Exception('Not 200!')
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
@@ -361,7 +363,7 @@ def CheckifCaptcha():
     # print(resp)
     c = re.compile('系统检测到您的IP最近访问过于频繁')
     if len(c.findall(cont.decode('utf-8'))) > 0:
-    #if resp.get('content-location') == 'https://xueqiu.com/service/captcha':
+    # if resp.get('content-location') == 'https://xueqiu.com/service/captcha':
     # if 'content-location' in resp.keys() == True:
     # if 'Location' in resp.keys() == True:
         return True
@@ -479,7 +481,7 @@ def GetPortfolioInfo(Symbol):
     # # for Symbol in pos.keys():
     # #     segment = DataFrame(pos[Symbol]['stocks'])[['stock_symbol', 'stock_name', 'weight', 'segment_name']]
     # #     position = pd.concat([position, segment])
-    # position = {'CNY': {'证券代码': 'CNY', '证券简称': '现金', '权重': cash_ratio, '分类': np.nan}}
+    # position = {'CNY': {'证券代码': 'CNY', '证券简称': '现金', '权重': cash_ratio, '雪球分类': np.nan}}
     # for Symbol in pos.keys():
     #     for s in pos[Symbol]['stocks']:
     #         secid = s['stock_symbol'][2:] + '.' + s['stock_symbol'][:2]
@@ -487,7 +489,7 @@ def GetPortfolioInfo(Symbol):
     #                            '证券简称': s['stock_name'],
     #                            '权重': float('%.6f' % (s['weight'] / 100)),
     #                            '分类': s['segment_name']}
-    # position = DataFrame(position, index=['证券代码', '证券简称', '权重', '分类']).T
+    # position = DataFrame(position, index=['证券代码', '证券简称', '权重', '雪球分类']).T
     try:
         postUrl = baseUrl % (Symbol, 'turnover')
         try:
