@@ -119,7 +119,6 @@ def GetPortfolioHistories(Symbol):
             )
 
     return Histories
-
     # Having a nice day......
 
 def ShowHistories(Histories):
@@ -132,4 +131,4 @@ def ShowHistories(Histories):
         elif item['Category'] == 'sys_rebalancing':
             print('系统调仓(分红)')
         else:
-            print('未知调仓 ' + item['Category'])
+            print('未知调仓: ' + item['Category'])
