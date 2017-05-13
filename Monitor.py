@@ -2,7 +2,7 @@
 #! python3
 
 from PortfolioInfo import *
-import re, json, time
+import re, json, time, os
 import numpy as np
 
 MonitorData = [
@@ -30,9 +30,29 @@ def InvokeWhenUpdate(Symbol, Last):
     return 'Amazing!'
 
 def LoadFromDisk(Filename):
-
+    if os.path.exists(Filename) == False:
+        raise FileNotFoundError("诶, %s不存在的说~" % Filename)
+    fp = open(Filename)
+    data = []
+    try:
+        data = json.load(fp)
+    except:
+        raise Exception("不能读取json文件!")
+    finally:
+        fp.close()
+    return data
 
 def SaveToDisk(Filename):
+    global MonitorData
+    fp = open(Filename, 'w')
+    try:
+        json.dump(MonitorData, fp)
+    except:
+        raise Exception("不能保存json文件!")
+    finally:
+        fp.close()
+
+
 
 
 if __name__ == '__main__':
