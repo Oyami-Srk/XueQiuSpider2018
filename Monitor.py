@@ -2,8 +2,7 @@
 #! python3
 
 from PortfolioInfo import *
-import re, json, time, os
-import numpy as np
+import json, time, os
 import gc
 
 MonitorData = [

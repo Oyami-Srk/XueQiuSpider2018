@@ -5,8 +5,6 @@ from FetchPortfolio import request, GetHeader
 import re, json, time
 import numpy as np
 
-from xueqiu_login import AutoLogin, CheckLogin
-
 def GetPortfolioDetails(Symbol):
     postUrl = 'https://xueqiu.com/P/'
     Header = GetHeader()
@@ -60,14 +58,7 @@ def GetPortfolioDetails(Symbol):
     return Info
 
 def GetPortfolioHistories(Symbol):
-    if CheckLogin() == False:
-        try:
-            AutoLogin()
-        except KeyboardInterrupt:
-            raise KeyboardInterrupt()
-        except:
-            raise Exception("登陆错误!")
-    Header = GetHeader()
+    Header = GetHeader(login=True)
     try:
         resp, cont = request('https://xueqiu.com/cubes/rebalancing/history.json?count=50&page=%d&cube_symbol=%s' % (1, Symbol), header=Header)
     except KeyboardInterrupt:
