@@ -116,11 +116,12 @@ def GetPortfolioHistories(Symbol):
     Histories = []
     for item in DataList:
         # 这里加一个判断item['status'] == 'success'可以剔除已取消的调仓
-        # 这里通过item['category']可以判断是系统自动分红(sys_rebalancing)还是用户自己调仓(user_rebalancing)
+        # 这里通过item['category']可以判断是系统自动分红送配(sys_rebalancing)还是用户自己调仓(user_rebalancing)
         # 通过item['created_at']可以获知调仓创建日期
         # 而item['updated_at']里面则是调仓执行日期(可能因为不是交易日而延迟？) 改值为Unix时间戳(ms)
         # 遍历rebalancing_histories以获得调仓
-        if item['status'] == 'failed':
+        if item['status'] == 'canceled' or item['status'] == 'failed':
+        # if item['status'] == 'failed':
             continue
 
         for i in item['rebalancing_histories']:
@@ -132,11 +133,13 @@ def GetPortfolioHistories(Symbol):
             Histories.append(
                 {
                     'Name': i['stock_name'],
-                    'Symbol': i['stock_symbol'],
+                    # 'Symbol': i['stock_symbol'],
+                    'Symbol': i['stock_symbol'][2:] + '.' + i['stock_symbol'][:2],
                     'Prev': i['prev_weight_adjusted'],
                     'Target': i['target_weight'],
                     'Date': i['updated_at'],
-                    'Category': item['category']
+                    'Category': item['category'],
+                    'Price': i['price']
                 }
             )
 
@@ -145,12 +148,16 @@ def GetPortfolioHistories(Symbol):
 
 def ShowHistories(Histories):
     for item in Histories:
-        print(time.strftime('%Y-%m-%d', time.localtime(item['Date']/1000)) + ': ', end='')
-        print(item['Name'] + '(' + item['Symbol'] + ')        ', end='')
-        print(('%.2f' % item['Prev']) + '%  --->  ' + ('%.2f' % item['Target']) + '%    ', end='')
+        print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(item['Date'] / 1000)) + '  ', end='')
+        print(item['Name'] + ' ' + item['Symbol'] + '   ', end='')
+        print(('%.2f' % item['Prev']) + '% --> ' + ('%.2f' % item['Target']) + '%   ', end='')
+        if item['Price'] == None:
+            print('成交价 NaN' + '   ', end='')
+        else:
+            print('成交价 ' + ('%.2f' % item['Price']) + '   ', end='')
         if item['Category'] == 'user_rebalancing':
             print('用户调仓')
         elif item['Category'] == 'sys_rebalancing':
-            print('系统调仓(分红)')
+            print('系统调仓(分红送配)')
         else:
             print('未知调仓: ' + item['Category'])
