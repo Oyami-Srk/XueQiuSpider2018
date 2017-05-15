@@ -635,14 +635,14 @@ def GetPortfoliosInfo(Symbols, ErrorSymbol = []):
     # # df = DataFrame(df, index=col).T
     return df
 
-# 压平多重嵌套的list
-def flat_list(the_list):
-    now = the_list[:]
-    res = []
-    while now:
-        head = now.pop(0)
-        if isinstance(head, list):
-            now = head+now
-        else:
-            res.append(head)
-    return res
+# # 压平多重嵌套的list
+# def flat_list(the_list):
+#     now = the_list[:]
+#     res = []
+#     while now:
+#         head = now.pop(0)
+#         if isinstance(head, list):
+#             now = head+now
+#         else:
+#             res.append(head)
+#     return res

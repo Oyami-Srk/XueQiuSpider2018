@@ -34,16 +34,27 @@ def GetPortfolioDetails(Symbol):
     Stocks_List = []
     for item in Obj_Stock:
         for stocks in Obj_Stock[item]['stocks']:
-            Stocks_List.append({'Name': stocks['stock_name'], 'Weight': stocks['weight'], 'Symbol': stocks['stock_symbol'], 'Segment': stocks['segment_name']})
+            secid = stocks['stock_symbol'][2:] + '.' + stocks['stock_symbol'][:2]
+            Stocks_List.append({'Symbol': secid,
+                                # 'Symbol': stocks['stock_symbol'],
+                                'Name': stocks['stock_name'],
+                                'Weight': float('%.6f' % (stocks['weight'] / 100)),
+                                'Segment': stocks['segment_name']})
 
+    if Obj_Info['close_date'] == '':
+        endtime = np.nan
+    else:
+        endtime = time.strftime('%Y-%m-%d', time.localtime(Obj_Info['close_date'] / 1000))
 
     Info = {
         'Symbol': Obj_Info['symbol'],
         'Name': Obj_Info['name'],
         'Market': Obj_Info['market'],
-        'begin': time.strftime('%Y-%m-%d', time.localtime(Obj_Info['created_at']/1000)),
-        'update': time.strftime('%Y-%m-%d', time.localtime(Obj_Info['sell_rebalancing']['updated_at']/1000)),
-        'end': np.nan if Obj_Info['close_date']=='' else time.strftime('%Y-%m-%d', time.localtime(Obj_Info['close_date']/1000)),
+        'begin': time.strftime('%Y-%m-%d', time.localtime(Obj_Info['created_at'] / 1000)),
+        'update': time.strftime('%Y-%m-%d', time.localtime(Obj_Info['sell_rebalancing']['updated_at'] / 1000)),
+        # 'end': np.nan if Obj_Info['close_date'] == ''
+        # else time.strftime('%Y-%m-%d', time.localtime(Obj_Info['close_date'] / 1000)),
+        'end': endtime,
         'gain':{
             'daily': Obj_Info['daily_gain'],
             'monthly': Obj_Info['monthly_gain'],
@@ -57,14 +68,34 @@ def GetPortfolioDetails(Symbol):
     }
     return Info
 
+# # An example:
+# Symbol = 'ZH542513'
+# test = GetPortfolioDetails(Symbol)
+# pos = test['Stocks']
+# pos.append({'Symbol': 'CNY',
+#             'Name': '现金',
+#             'Weight': float('%.6f' % (test['cash_ratio'] / 100)),
+#             'Segment': np.nan})
+# pos = DataFrame(pos)[['Symbol', 'Name', 'Weight', 'Segment']]
+# pos = pos.rename(columns={'Symbol': '证券代码', 'Name': '证券简称', 'Weight': '权重', 'Segment': '雪球分类'})
+
+
 def GetPortfolioHistories(Symbol):
+    # if CheckLogin() == False:
+    #     try:
+    #         AutoLogin()
+    #     except KeyboardInterrupt:
+    #         raise KeyboardInterrupt()
+    #     except:
+    #         raise Exception("登陆错误!")
     Header = GetHeader(login=True)
     try:
-        resp, cont = request('https://xueqiu.com/cubes/rebalancing/history.json?count=50&page=%d&cube_symbol=%s' % (1, Symbol), header=Header)
+        resp, cont = request('https://xueqiu.com/cubes/rebalancing/history.json?count=50&page=%d&cube_symbol=%s'
+                             % (1, Symbol), header=Header)
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
-        raise Exception("网络错误!")
+        raise Exception('网络错误！')
 
     data = json.loads(cont.decode('utf-8'))
     DataList = data['list']
@@ -73,21 +104,21 @@ def GetPortfolioHistories(Symbol):
     for i in range(50, totalCount, 50):
         PageCount = PageCount + 1
         try:
-            resp, cont = request(
-                'https://xueqiu.com/cubes/rebalancing/history.json?count=50&page=%d&cube_symbol=%s' % (PageCount, Symbol),
-                header=Header)
+            resp, cont = request('https://xueqiu.com/cubes/rebalancing/history.json?count=50&page=%d&cube_symbol=%s'
+                                 % (PageCount, Symbol), header=Header)
         except KeyboardInterrupt:
             raise KeyboardInterrupt()
         except:
-            raise Exception("网络错误!")
+            raise Exception('网络错误！')
         data = json.loads(cont.decode('utf-8'))
         DataList.extend(data['list'])
 
     Histories = []
     for item in DataList:
-        # 这里加一个判断item['status']=='success'可以剔除已取消的调仓
+        # 这里加一个判断item['status'] == 'success'可以剔除已取消的调仓
         # 这里通过item['category']可以判断是系统自动分红(sys_rebalancing)还是用户自己调仓(user_rebalancing)
-        # 通过item['created_at']可以获知调仓创建日期, 而item['updated_at']里面则是调仓执行日期(可能因为不是交易日而延迟?) 改值为Unix时间戳(ms)
+        # 通过item['created_at']可以获知调仓创建日期
+        # 而item['updated_at']里面则是调仓执行日期(可能因为不是交易日而延迟？) 改值为Unix时间戳(ms)
         # 遍历rebalancing_histories以获得调仓
         if item['status'] == 'failed':
             continue
