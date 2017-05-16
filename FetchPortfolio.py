@@ -11,7 +11,7 @@ import time, hashlib, json, re
 import numpy as np
 from pandas import Series, DataFrame
 
-from private_data import proxies, agent, login_telephone, login_password
+from private_data import proxies, agent, login_telephone, login_password, login_areacode
 
 sleeptime = 1          # 休眠时间（单位秒）
 
@@ -85,8 +85,7 @@ def xueqiu_login(telephone, password):
         raise Exception('网络错误！')
     login_url = 'https://xueqiu.com/user/login'
     postdata = {
-        # 'areacode': '86',
-        'areacode': '1',
+        'areacode': login_areacode,
         'password': get_md5(password),
         'remember_me': 'on',
         'telephone': telephone
