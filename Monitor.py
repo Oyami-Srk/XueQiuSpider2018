@@ -34,7 +34,7 @@ def InvokeWhenUpdated(Symbol, Last, data):
     return 'Amazing!'
 
 def InvokeWhenAdded(Symbol):
-    print('组合 %s 进入监视！' % Symbol)
+    print('组合 %s 开始监控！' % Symbol)
     # You can add your logic here!
 
 def LoadFromDisk(Filename):

@@ -34,10 +34,9 @@ def GetPortfolioDetails(Symbol):
     Stocks_List = []
     for item in Obj_Stock:
         for stocks in Obj_Stock[item]['stocks']:
-            # secid = stocks['stock_symbol'][2:] + '.' + stocks['stock_symbol'][:2]
-            secid = (stocks['stock_symbol'][2:] + '.' + stocks['stock_symbol'][:2]) if stocks['stock_symbol'][0] == 'S' else stocks['stock_symbol']
-            Stocks_List.append({'Symbol': secid,
-                                # 'Symbol': stocks['stock_symbol'],
+            # secid = (stocks['stock_symbol'][2:] + '.' + stocks['stock_symbol'][:2])
+            Stocks_List.append({'Symbol': stocks['stock_symbol'],
+                                # 'Symbol': secid,
                                 'Name': stocks['stock_name'],
                                 'Weight': float('%.6f' % (stocks['weight'] / 100)),
                                 'Segment': stocks['segment_name']})
@@ -133,8 +132,8 @@ def GetPortfolioHistories(Symbol):
             Histories.append(
                 {
                     'Name': i['stock_name'],
-                    # 'Symbol': i['stock_symbol'],
-                    'Symbol': (i['stock_symbol'][2:] + '.' + i['stock_symbol'][:2]) if i['stock_symbol'][0] == 'S' else i['stock_symbol'],
+                    'Symbol': i['stock_symbol'],
+                    # 'Symbol': (i['stock_symbol'][2:] + '.' + i['stock_symbol'][:2]),
                     'Prev': i['prev_weight_adjusted'],
                     'Target': i['target_weight'],
                     'Date': i['updated_at'],
