@@ -34,9 +34,9 @@ def GetPortfolioDetails(Symbol):
     Stocks_List = []
     for item in Obj_Stock:
         for stocks in Obj_Stock[item]['stocks']:
-            secid = stocks['stock_symbol'][2:] + '.' + stocks['stock_symbol'][:2]
-            Stocks_List.append({'Symbol': secid,
-                                # 'Symbol': stocks['stock_symbol'],
+            # secid = stocks['stock_symbol'][2:] + '.' + stocks['stock_symbol'][:2]
+            Stocks_List.append({'Symbol': stocks['stock_symbol'],
+                                # 'Symbol': secid,
                                 'Name': stocks['stock_name'],
                                 'Weight': float('%.6f' % (stocks['weight'] / 100)),
                                 'Segment': stocks['segment_name']})
@@ -121,7 +121,6 @@ def GetPortfolioHistories(Symbol):
         # 而item['updated_at']里面则是调仓执行日期(可能因为不是交易日而延迟？) 改值为Unix时间戳(ms)
         # 遍历rebalancing_histories以获得调仓
         if item['status'] == 'canceled' or item['status'] == 'failed':
-        # if item['status'] == 'failed':
             continue
 
         for i in item['rebalancing_histories']:

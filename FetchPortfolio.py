@@ -548,8 +548,9 @@ def GetPortfolioInfo(Symbol):
     # position = {'CNY': {'证券代码': 'CNY', '证券简称': '现金', '权重': cash_ratio, '雪球分类': np.nan}}
     # for Symbol in pos.keys():
     #     for s in pos[Symbol]['stocks']:
-    #         secid = s['stock_symbol'][2:] + '.' + s['stock_symbol'][:2]
-    #         position[secid] = {'证券代码': secid,
+    # #        secid = s['stock_symbol'][2:] + '.' + s['stock_symbol'][:2]
+    #         position[secid] = {'证券代码': s['stock_symbol'],
+    # #                           '证券代码': secid,
     #                            '证券简称': s['stock_name'],
     #                            '权重': float('%.6f' % (s['weight'] / 100)),
     #                            '分类': s['segment_name']}
