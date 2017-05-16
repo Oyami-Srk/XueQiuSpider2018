@@ -5,6 +5,9 @@ from FetchPortfolio import request, GetHeader
 import re, json, time
 import numpy as np
 
+def CheckStockCN(Symbol):
+    return len(re.findall('(S.\d{6})', Symbol)) > 0
+
 def GetPortfolioDetails(Symbol):
     postUrl = 'https://xueqiu.com/P/'
     Header = GetHeader()
@@ -35,8 +38,9 @@ def GetPortfolioDetails(Symbol):
     for item in Obj_Stock:
         for stocks in Obj_Stock[item]['stocks']:
             # secid = (stocks['stock_symbol'][2:] + '.' + stocks['stock_symbol'][:2])
-            Stocks_List.append({'Symbol': stocks['stock_symbol'],
-                                # 'Symbol': secid,
+            secid = (stocks['stock_symbol'][2:] + '.' + stocks['stock_symbol'][:2]) if (CheckStockCN(stocks['stock_symbol'])) else stocks['stock_symbol']
+            Stocks_List.append({#'Symbol': stocks['stock_symbol'],
+                                'Symbol': secid,
                                 'Name': stocks['stock_name'],
                                 'Weight': float('%.6f' % (stocks['weight'] / 100)),
                                 'Segment': stocks['segment_name']})
@@ -129,11 +133,13 @@ def GetPortfolioHistories(Symbol):
             if i['target_weight'] == None:
                 i['target_weight'] = 0
 
+            secid = (i['stock_symbol'][2:] + '.' + i['stock_symbol'][:2]) if (CheckStockCN(i['stock_symbol'])) else i['stock_symbol']
+
             Histories.append(
                 {
                     'Name': i['stock_name'],
-                    'Symbol': i['stock_symbol'],
-                    # 'Symbol': (i['stock_symbol'][2:] + '.' + i['stock_symbol'][:2]),
+                    # 'Symbol': i['stock_symbol'],
+                    'Symbol': secid,
                     'Prev': i['prev_weight_adjusted'],
                     'Target': i['target_weight'],
                     'Date': i['updated_at'],
