@@ -122,7 +122,6 @@ def GetPortfolioHistories(Symbol):
         # 而item['updated_at']里面则是调仓执行日期(可能因为不是交易日而延迟？) 改值为Unix时间戳(ms)
         # 遍历rebalancing_histories以获得调仓
         if item['status'] == 'canceled' or item['status'] == 'failed':
-        # if item['status'] == 'failed':
             continue
 
         for i in item['rebalancing_histories']:
