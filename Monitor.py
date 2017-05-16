@@ -11,6 +11,7 @@ MonitorData = [
 
 # MonitorDelay = 60 * 60 * 1
 MonitorDelay = 5 * 60 * 1
+RestDelay = 1 * 60
 
 def GetLastestTime(Symbol):
     data = GetPortfolioHistories(Symbol)
@@ -76,19 +77,25 @@ def CheckUpdate(Data):
 def Monitor():
     global MonitorData
     MonitorData = LoadFromDisk('Monitor.json')
-    now = time.strftime('%H:%M', time.localtime())
     try:
-        while(('9:30' <= now <= '11:30') or ('13:00' <= now <= '15:00')):
-            try:
-                CheckUpdate(MonitorData)
-                time.sleep(MonitorDelay)
-            except KeyboardInterrupt:
-                raise KeyboardInterrupt()
-            except Exception as e:
-                print('出现错误：' + str(e))
-                # print('出现错误：' + e.message)
-            except:
-                print('大概不会出现的其他错误！！！')
+        while(True):
+            now = time.strftime('%H:%M', time.localtime())
+            if ('9:30' <= now <= '11:30') or ('13:00' <= now <= '15:00'):
+                try:
+                    CheckUpdate(MonitorData)
+                    time.sleep(MonitorDelay)
+                except KeyboardInterrupt:
+                    raise KeyboardInterrupt()
+                except Exception as e:
+                    print('出现错误：' + str(e))
+                    # print('出现错误：' + e.message)
+                except:
+                    print('大概不会出现的其他错误！！！')
+            else:
+                print('尚未到交易时间')
+                time.sleep(RestDelay)
+                continue
+                # break
 
     except KeyboardInterrupt:
         print('监控终止！')
