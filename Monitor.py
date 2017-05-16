@@ -76,8 +76,9 @@ def CheckUpdate(Data):
 def Monitor():
     global MonitorData
     MonitorData = LoadFromDisk('Monitor.json')
+    now = time.strftime('%H:%M', time.localtime())
     try:
-        while(True):
+        while(('9:30' <= now <= '11:30') or ('13:00' <= now <= '15:00')):
             try:
                 CheckUpdate(MonitorData)
                 time.sleep(MonitorDelay)
@@ -87,7 +88,7 @@ def Monitor():
                 print('出现错误：' + str(e))
                 # print('出现错误：' + e.message)
             except:
-                print('大概不可能会出现的其他错误！！！')
+                print('大概不会出现的其他错误！！！')
 
     except KeyboardInterrupt:
         print('监控终止！')
