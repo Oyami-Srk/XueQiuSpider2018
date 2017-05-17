@@ -154,16 +154,19 @@ def GetPortfolioHistories(Symbol):
 
 def ShowHistories(Histories):
     for item in Histories:
-        print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(item['Date'] / 1000)) + '  ', end='')
-        print(item['Name'] + ' ' + item['Symbol'] + '   ', end='')
-        print(('%.2f' % item['Prev']) + '% --> ' + ('%.2f' % item['Target']) + '%   ', end='')
+        str1 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(item['Date'] / 1000)) + '  '
+        str2 = item['Name'] + ' ' + item['Symbol'] + '   '
+        str3 = ('%.2f' % item['Prev']) + '% --> ' + ('%.2f' % item['Target']) + '%   '
         if item['Price'] == None:
-            print('成交价 NaN' + '   ', end='')
+            str4 = '成交价 NaN' + '   '
         else:
-            print('成交价 ' + ('%.2f' % item['Price']) + '   ', end='')
+            str4 = '成交价 ' + ('%.2f' % item['Price']) + '   '
+
         if item['Category'] == 'user_rebalancing':
-            print('用户调仓')
+            str5 = '用户调仓'
         elif item['Category'] == 'sys_rebalancing':
-            print('系统调仓(分红送配)')
+            str5 = '系统调仓(分红送配)'
         else:
-            print('未知调仓: ' + item['Category'])
+            str5 = '未知调仓: ' + item['Category']
+        print(str1 + str2 + str3 + str4 + str5)
+        return str1 + str2 + str3 + str4 + str5

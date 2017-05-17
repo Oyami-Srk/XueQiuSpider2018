@@ -2,8 +2,10 @@
 #! python3
 
 from PortfolioInfo import *
+from private_data import monitor_log
 import json, time, os
 import gc
+import random
 
 # MonitorData = [
 #     {'Symbol': '', 'Time': 0}
@@ -12,6 +14,21 @@ import gc
 # MonitorDelay = 60 * 60 * 1
 MonitorDelay = 5 * 60 * 1
 RestDelay = 1 * 60
+InterDelay = [5, 40] # Min, Max
+
+loop = True
+
+def Log2Disk(string):
+    global  monitor_log
+    fp = open(monitor_log, 'w')
+    try:
+        fp.write(string + '\n')
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt()
+    except:
+        raise Exception('无法保存log文件于 "%" 上' % monitor_log)
+    finally:
+        fp.close()
 
 def GetLastestTime(Symbol):
     data = GetPortfolioHistories(Symbol)
@@ -28,7 +45,7 @@ def InvokeWhenUpdated(Symbol, Last, data):
         if data[i]['Date'] == Last:
             break
         i = i + 1
-    ShowHistories(data[:i])
+    Log2Disk(ShowHistories(data[:i]))
     # You can add your logic here! data[:i] means delta History!
     # Saving data to history file is best way!
     del data
@@ -36,6 +53,7 @@ def InvokeWhenUpdated(Symbol, Last, data):
 
 def InvokeWhenAdded(Symbol):
     print('组合 %s 开始监控！' % Symbol)
+    Log2Disk('组合 %s 开始监控！' % Symbol)
     # You can add your logic here!
 
 def LoadFromDisk(Filename):
@@ -45,6 +63,8 @@ def LoadFromDisk(Filename):
     # data = []
     try:
         data = json.load(fp)
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt()
     except:
         raise Exception('无法读取json文件！')
     finally:
@@ -56,6 +76,8 @@ def SaveToDisk(Filename):
     fp = open(Filename, 'w')
     try:
         json.dump(MonitorData, fp)
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt()
     except:
         raise Exception('无法保存json文件！')
     finally:
@@ -63,6 +85,7 @@ def SaveToDisk(Filename):
 
 def CheckUpdate(Data):
     for item in Data:
+        time.sleep(random.randint(InterDelay[0], InterDelay[1]))    # 随机整数
         if item['Symbol'] == '':
             continue
         Last, data = GetLastestTime(item['Symbol'])
@@ -73,6 +96,45 @@ def CheckUpdate(Data):
                 InvokeWhenUpdated(item['Symbol'], item['Time'], data)
             item['Time'] = Last
         gc.collect()
+
+'''
+
+def MainLoop():
+    global MonitorData
+    MonitorData = LoadFromDisk('Monitor.json')
+    while(loop):
+        now = time.strftime('%H:%M', time.localtime())
+        if ('09:30' <= now <= '11:30') or ('13:00' <= now <= '15:00'):
+            try:
+                CheckUpdate(MonitorData)
+                time.sleep(MonitorDelay)
+            except Exception as e:
+                print('出现错误：' + str(e))
+                time.sleep(RestDelay)
+            except:
+                print('大概不会出现的其他错误！！！')
+                time.sleep(RestDelay)
+        else:
+            print('尚未到交易时间')
+            time.sleep(RestDelay)
+            continue
+    SaveToDisk('Monitor.json')
+
+def Monitor():
+    global loop
+    th = Thread(target=MainLoop)
+    th.start()
+
+    try:
+        while True:
+            time.sleep(60 * 60 * 1)
+    except KeyboardInterrupt:
+        loop = False
+
+    print('监视终止!')
+    th.join()
+
+'''
 
 def Monitor():
     global MonitorData
