@@ -5,9 +5,9 @@ from PortfolioInfo import *
 import json, time, os
 import gc
 
-MonitorData = [
-    {'Symbol': '', 'Time': 0}
-]
+# MonitorData = [
+#     {'Symbol': '', 'Time': 0}
+# ]
 
 # MonitorDelay = 60 * 60 * 1
 MonitorDelay = 5 * 60 * 1
@@ -80,7 +80,7 @@ def Monitor():
     try:
         while(True):
             now = time.strftime('%H:%M', time.localtime())
-            if ('9:30' <= now <= '11:30') or ('13:00' <= now <= '15:00'):
+            if ('09:30' <= now <= '11:30') or ('13:00' <= now <= '15:00'):
                 try:
                     CheckUpdate(MonitorData)
                     time.sleep(MonitorDelay)
@@ -89,8 +89,10 @@ def Monitor():
                 except Exception as e:
                     print('出现错误：' + str(e))
                     # print('出现错误：' + e.message)
+                    time.sleep(RestDelay)
                 except:
                     print('大概不会出现的其他错误！！！')
+                    time.sleep(RestDelay)
             else:
                 print('尚未到交易时间')
                 time.sleep(RestDelay)
