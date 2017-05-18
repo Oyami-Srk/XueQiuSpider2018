@@ -14,12 +14,11 @@ import random
 # MonitorDelay = 60 * 60 * 1
 MonitorDelay = 5 * 60 * 1
 RestDelay = 1 * 60
-InterDelay = [5, 40] # Min, Max
-
-loop = True
+# InterDelay = [5, 40] # Min, Max
+InterDelay = [1, 10]  # Min, Max
 
 def Log2Disk(string):
-    global  monitor_log
+    global monitor_log
     fp = open(monitor_log, 'w')
     try:
         fp.write(string + '\n')
@@ -45,6 +44,7 @@ def InvokeWhenUpdated(Symbol, Last, data):
         if data[i]['Date'] == Last:
             break
         i = i + 1
+    # ShowHistories(data[:i])
     Log2Disk(ShowHistories(data[:i]))
     # You can add your logic here! data[:i] means delta History!
     # Saving data to history file is best way!
@@ -85,7 +85,7 @@ def SaveToDisk(Filename):
 
 def CheckUpdate(Data):
     for item in Data:
-        time.sleep(random.randint(InterDelay[0], InterDelay[1]))    # 随机整数
+        time.sleep(random.randint(InterDelay[0], InterDelay[1]))  # 随机整数
         if item['Symbol'] == '':
             continue
         Last, data = GetLastestTime(item['Symbol'])
@@ -98,6 +98,8 @@ def CheckUpdate(Data):
         gc.collect()
 
 '''
+
+loop = True
 
 def MainLoop():
     global MonitorData
