@@ -124,7 +124,7 @@ def GetPortfolioHistories(Symbol):
         # 通过item['created_at']可以获知调仓创建日期
         # 而item['updated_at']里面则是调仓执行日期(可能因为不是交易日而延迟？) 改值为Unix时间戳(ms)
         # 遍历rebalancing_histories以获得调仓
-        if item['status'] == 'canceled' or item['status'] == 'failed':
+        if item['status'] == 'canceled' or item['status'] == 'failed' or item['status'] == 'pending':
             continue
 
         for i in item['rebalancing_histories']:
@@ -153,6 +153,7 @@ def GetPortfolioHistories(Symbol):
     # Having a nice day......
 
 def ShowHistories(Histories):
+    ret = ''
     for item in Histories:
         str1 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(item['Date'] / 1000)) + '  '
         str2 = item['Name'] + ' ' + item['Symbol'] + '   '
@@ -169,4 +170,5 @@ def ShowHistories(Histories):
         else:
             str5 = '未知调仓: ' + item['Category']
         print(str1 + str2 + str3 + str4 + str5)
-        return str1 + str2 + str3 + str4 + str5
+        ret = ret + str1 + str2 + str3 + str4 + str5 + '\n'
+    return ret
