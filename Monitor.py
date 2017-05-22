@@ -39,9 +39,14 @@ def GetLastestTime(Symbol):
 def InvokeWhenUpdated(Symbol, Last, data):
     print('注意！组合 %s 调仓了！' % Symbol)
     # data = GetPortfolioHistories(Symbol)
-    i = 0
-    while(True):
-        if data[i]['Date'] == Last:
+    # i = 0
+    # while(True):
+    #     if data[i]['Date'] == Last:
+    #         break
+    #     i = i + 1
+    n = len(data)
+    for i in range(n):
+        if data[i]['Date'] != Last:
             break
         i = i + 1
     # ShowHistories(data[:i])
