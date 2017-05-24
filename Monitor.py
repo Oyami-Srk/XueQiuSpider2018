@@ -11,15 +11,15 @@ import random
 #     {'Symbol': '', 'Time': 0}
 # ]
 
-# MonitorDelay = 60 * 60 * 1
-MonitorDelay = 5 * 60 * 1
+MonitorDelay = 1
+# MonitorDelay = 5 * 60 * 1
 RestDelay = 1 * 60
 # InterDelay = [5, 40] # Min, Max
 InterDelay = [1, 10]  # Min, Max
 
 def Log2Disk(string):
     global monitor_log
-    fp = open(monitor_log, 'w')
+    fp = open(monitor_log, 'w+')
     try:
         fp.write(string + '\n')
     except KeyboardInterrupt:
@@ -44,13 +44,14 @@ def InvokeWhenUpdated(Symbol, Last, data):
     #     if data[i]['Date'] == Last:
     #         break
     #     i = i + 1
+    i = 0
     n = len(data)
     for i in range(n):
-        if data[i]['Date'] != Last:
+        if data[i]['Date'] == Last:
             break
-        i = i + 1
     # ShowHistories(data[:i])
     Log2Disk(ShowHistories(data[:i]))
+	# print(data[:i])
     # You can add your logic here! data[:i] means delta History!
     # Saving data to history file is best way!
     del data
