@@ -11,8 +11,8 @@ import random
 #     {'Symbol': '', 'Time': 0}
 # ]
 
-MonitorDelay = 1
-# MonitorDelay = 5 * 60 * 1
+# MonitorDelay = 60 * 60 * 1
+MonitorDelay = 5 * 60 * 1
 RestDelay = 1 * 60
 # InterDelay = [5, 40] # Min, Max
 InterDelay = [1, 10]  # Min, Max
@@ -43,7 +43,7 @@ def InvokeWhenUpdated(Symbol, Last, data):
     # while(True):
     #     if data[i]['Date'] == Last:
     #         break
-    #     i = i + 1
+    #     i += 1
     i = 0
     n = len(data)
     for i in range(n):
@@ -51,7 +51,7 @@ def InvokeWhenUpdated(Symbol, Last, data):
             break
     # ShowHistories(data[:i])
     Log2Disk(ShowHistories(data[:i]))
-	# print(data[:i])
+    # print(data[:i])
     # You can add your logic here! data[:i] means delta History!
     # Saving data to history file is best way!
     del data
@@ -94,13 +94,13 @@ def CheckUpdate(Data):
         time.sleep(random.randint(InterDelay[0], InterDelay[1]))  # 随机整数
         if item['Symbol'] == '':
             continue
-        Last, data = GetLastestTime(item['Symbol'])
-        if Last != item['Time']:
+        Lastest, data = GetLastestTime(item['Symbol'])
+        if Lastest != item['Time']:
             if item['Time'] == 0:
                 InvokeWhenAdded(item['Symbol'])
             else:
                 InvokeWhenUpdated(item['Symbol'], item['Time'], data)
-            item['Time'] = Last
+            item['Time'] = Lastest
         gc.collect()
 
 '''
