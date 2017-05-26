@@ -12,14 +12,15 @@ import random
 # ]
 
 # MonitorDelay = 60 * 60 * 1
-MonitorDelay = 5 * 60 * 1
+# MonitorDelay = 5 * 60 * 1
+MonitorDelay = 10
 RestDelay = 1 * 60
 # InterDelay = [5, 40] # Min, Max
 InterDelay = [1, 10]  # Min, Max
 
 def Log2Disk(string):
     global monitor_log
-    fp = open(monitor_log, 'w+')
+    fp = open(monitor_log, 'a')
     try:
         fp.write(string + '\n')
     except KeyboardInterrupt:
