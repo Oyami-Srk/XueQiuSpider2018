@@ -26,13 +26,15 @@ baseHeader = {
     #               'Version/6.0 Mobile/10B350 Safari/8536.25',
     # 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) '
     #               'Chrome/52.0.2743.98 Mobile Safari/537.36',
-    'Accept': '*/*',
-    'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
-    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en,zh-CN;q=0.8,zh;q=0.6,ja;q=0.4,zh-TW;q=0.2,pt;q=0.2,en-US;q=0.2',
+    'Accept-Encoding': 'gzip, deflate, sdch, br',
+    'Cache-Control': 'max-age=0',
     'X-Requested-With': 'XMLHttpRequest',
     'Referer': '',
     'Cookie': '',   # must be filled
-    'Connection': 'keep-alive'
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests' :'1'
 }
 
 # # 祖传request, 从py2升级而来
@@ -498,6 +500,12 @@ def GetPortfolioInfo(Symbol):
         print('User Interrupt!')
     except:
         raise Exception('无法获取组合信息！')
+    
+    file_object = open('thefile.txt','w')
+    print(cont.decode('utf-8'))
+    file_object.write(cont.decode('utf-8'))
+    file_object.close()
+		
     c = re.compile('(<div (style="border:0;padding-left:0" |)'
                    'class="cube-profit-day cube-profit">.+?</div>.+?</div>)')
     data = c.findall(cont.decode('utf-8'))
