@@ -141,8 +141,11 @@ def GetHeader(login = False):
                 raise KeyboardInterrupt()
             except:
                 raise Exception('无法连接！')
-            Header['Cookie'] = resp['set-cookie']
-            Cookie_glo = resp['set-cookie']
+            
+            c = ''.join(resp['set-cookie'].split(',')[0:4])
+
+            Header['Cookie'] = c
+            Cookie_glo = c
         else:
             Header['Cookie'] = Cookie_glo
     return Header
@@ -500,12 +503,7 @@ def GetPortfolioInfo(Symbol):
         print('User Interrupt!')
     except:
         raise Exception('无法获取组合信息！')
-    
-    file_object = open('thefile.txt','w')
-    print(cont.decode('utf-8'))
-    file_object.write(cont.decode('utf-8'))
-    file_object.close()
-		
+    		
     c = re.compile('(<div (style="border:0;padding-left:0" |)'
                    'class="cube-profit-day cube-profit">.+?</div>.+?</div>)')
     data = c.findall(cont.decode('utf-8'))
