@@ -12,6 +12,7 @@ import numpy as np
 from pandas import Series, DataFrame
 
 from private_data import proxies, agent, login_telephone, login_password, login_areacode
+from WebAT_Requests import WebAT
 
 sleeptime = 1          # 休眠时间（单位秒）
 
@@ -49,19 +50,20 @@ baseHeader = {
 #         raise('Request Failed!')
 
 # new!
-def request(url, body = {}, header = {}, method = 'GET'):
+
+WAT = WebAT(agent, 20, proxies)
+
+def request(url, body = None, header = {}, method = 'GET'):
     try:
         if method.upper() == 'GET':
-            r = requests.get(url, data=body, headers=header, timeout=20, proxies=proxies)
+            r, c = WAT.Get(url)
         elif method.upper() == 'POST':
-            r = requests.post(url, data=body, headers=header, proxies=proxies)
-        # if r.status_code != 200:
-        #     raise Exception('Not 200!')
+            r, c = WAT.Post(url,body)
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
         raise Exception('Connect Error!')
-    return r.headers, r.content
+    return r, c
 
 def GetClientIP():
     Data = request('http://ip.chinaz.com/getip.aspx')[1].decode('utf-8')
@@ -80,7 +82,8 @@ def xueqiu_login(telephone, password):
     headers['Referer'] = 'https://xueqiu.com/'
     login_url_api = 'https://xueqiu.com/service/csrf?api=%2Fuser%2Flogin'
     try:
-        request(login_url_api, header=headers)
+        #request(login_url_api, header=headers)
+        WAT.Get(login_url_api)
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
@@ -93,9 +96,11 @@ def xueqiu_login(telephone, password):
         'telephone': telephone
     }
     try:
-        resp, cont = request(login_url, body=postdata, header=headers, method='POST')
+        #resp, cont = request(login_url, body=postdata, header=headers, method='POST')
+        resp, cont = WAT.Post(login_url,postdata)
         headers['Cookie'] = resp['Set-Cookie']
-        res_, cont = request('https://xueqiu.com/setting/user', header=headers)
+        #res_, cont = request('https://xueqiu.com/setting/user', header=headers)
+        res_, cont = WAT.Get('https://xueqiu.com/setting/user')
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
