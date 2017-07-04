@@ -5,10 +5,13 @@
 
 from abc import ABCMeta, abstractmethod
 
-class IWebAT(object):
+# class IWebAT(object):
+#     __metaclass__ = ABCMeta
+# class IWebAT(object, metaclass=ABCMeta):
+# py3中的类默认继承object
+class IWebAT(metaclass=ABCMeta):
     """ Interface for WebAT """
-    __metaclass__ = ABCMeta
-
+    
     def __init__(self, agent='', timeout=None, proxies=None):
         self.__agent__ = agent
         self.__method__ = "None"
@@ -17,7 +20,8 @@ class IWebAT(object):
         self.__proxies__ = proxies
 
     def __str__(self):
-        return "WebAT( V%(version)d ) with %(method)s\nAgent: %(agent)s" % {'version': self.__version__, 'method':self.__method__, 'agent':self.__agent__}
+        return "WebAT( V%(version)d ) with %(method)s\nAgent: %(agent)s" % \
+               {'version': self.__version__, 'method':self.__method__, 'agent':self.__agent__}
 
     @abstractmethod
     def GetCookies(self):

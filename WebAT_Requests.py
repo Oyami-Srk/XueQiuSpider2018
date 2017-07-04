@@ -10,7 +10,7 @@ class WebAT(IWebAT):
     """ WebAT with Requests """
 
     def __init__(self, agent='', timeout=None, proxies=None):
-        IWebAT.__init__(self, agent, timeout)
+        IWebAT.__init__(self, agent, timeout, proxies)
         self.__method__ = "Requests"
         self.__session__ = requests.session()
         self.SetHeader('User-Agent', agent)
@@ -39,10 +39,10 @@ class WebAT(IWebAT):
         
     def Post(self, url, Body=None):
         "Post Method"
-        resp = self.__session__.post(url,Body,proxies=self.__proxies__,timeout=self.__timeout__)
+        resp = self.__session__.post(url, Body, timeout=self.__timeout__, proxies=self.__proxies__)
         return resp.headers, resp.content
 
     def Get(self, url):
         "Get Method"
-        resp = self.__session__.get(url, proxies=self.__proxies__,timeout=self.__timeout__)
+        resp = self.__session__.get(url, timeout=self.__timeout__, proxies=self.__proxies__)
         return resp.headers, resp.content

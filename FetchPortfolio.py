@@ -5,7 +5,7 @@
 #Follow the installation guide in https://github.com/PyTables/PyTables/ may help you a lot
 
 # import urllib, httplib2
-import requests
+# import requests
 import time, hashlib, json, re
 # import pandas as pd
 import numpy as np
@@ -15,19 +15,25 @@ from private_data import proxies, agent, login_telephone, login_password, login_
 from WebAT_Requests import WebAT
 
 sleeptime = 1          # 休眠时间（单位秒）
-
 Cookie_glo = ''        # 节约资源而来的保存第一次获取的cookie
 Cookie_glo_login = ''  # After Login.
 
 baseHeader = {
     'Host': 'xueqiu.com',
+    # 'User-Agent': 'Baiduspider',
+    # 'User-Agent': 'Mediapartners-Google',
+    # 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
     'User-Agent': agent,
     # 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0',
     # 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) '
     #               'Version/6.0 Mobile/10B350 Safari/8536.25',
     # 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) '
     #               'Chrome/52.0.2743.98 Mobile Safari/537.36',
+    # 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) \ '
+    #               'Chrome/41.0. 2272.118 Safari/537.36',
+    # 'Accept': '*/*',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    # 'Accept-Language': 'zh-CN,zh;q=0.8',
     'Accept-Language': 'en,zh-CN;q=0.8,zh;q=0.6,ja;q=0.4,zh-TW;q=0.2,pt;q=0.2,en-US;q=0.2',
     'Accept-Encoding': 'gzip, deflate, sdch, br',
     'Cache-Control': 'max-age=0',
@@ -49,16 +55,32 @@ baseHeader = {
 #     except KeyError:
 #         raise('Request Failed!')
 
-# new!
+# # new!
+# def request(url, body = {}, header = {}, method = 'GET'):
+#     try:
+#         if method.upper() == 'GET':
+#             r = requests.get(url, data=body, headers=header, timeout=20, proxies=proxies)
+#         elif method.upper() == 'POST':
+#             r = requests.post(url, data=body, headers=header, proxies=proxies)
+#         # if r.status_code != 200:
+#         #     raise Exception('Not 200!')
+#     except KeyboardInterrupt:
+#         raise KeyboardInterrupt()
+#     except:
+#         raise Exception('Connect Error!')
+#     return r.headers, r.content
 
-WAT = WebAT(agent, 20, proxies)
+# New framework!
+WAT = WebAT(agent, timeout=20, proxies=proxies)
 
 def request(url, body = None, header = {}, method = 'GET'):
     try:
         if method.upper() == 'GET':
             r, c = WAT.Get(url)
         elif method.upper() == 'POST':
-            r, c = WAT.Post(url,body)
+            r, c = WAT.Post(url, body)
+        # if r.status_code != 200:
+        #     raise Exception('Not 200!')
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
     except:
@@ -82,7 +104,7 @@ def xueqiu_login(telephone, password):
     headers['Referer'] = 'https://xueqiu.com/'
     login_url_api = 'https://xueqiu.com/service/csrf?api=%2Fuser%2Flogin'
     try:
-        #request(login_url_api, header=headers)
+        # request(login_url_api, header=headers)
         WAT.Get(login_url_api)
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
@@ -96,10 +118,10 @@ def xueqiu_login(telephone, password):
         'telephone': telephone
     }
     try:
-        #resp, cont = request(login_url, body=postdata, header=headers, method='POST')
-        resp, cont = WAT.Post(login_url,postdata)
+        # resp, cont = request(login_url, body=postdata, header=headers, method='POST')
+        resp, cont = WAT.Post(login_url, postdata)
         headers['Cookie'] = resp['Set-Cookie']
-        #res_, cont = request('https://xueqiu.com/setting/user', header=headers)
+        # res_, cont = request('https://xueqiu.com/setting/user', header=headers)
         res_, cont = WAT.Get('https://xueqiu.com/setting/user')
     except KeyboardInterrupt:
         raise KeyboardInterrupt()
@@ -111,7 +133,8 @@ def xueqiu_login(telephone, password):
         print('登录失败，请检查你的手机号和密码输入是否正确')
         return ''
     else:
-        print('登录成功，你的用户 id 是：%s, 你的用户名是：%s' % (res[0]))
+        # print('登录成功，你的用户 id 是：%s, 你的用户名是：%s' % (res[0]))
+        print('登录成功！')
         SetCookie(resp['Set-Cookie'])
         return resp['Set-Cookie']
 
@@ -146,11 +169,11 @@ def GetHeader(login = False):
                 raise KeyboardInterrupt()
             except:
                 raise Exception('无法连接！')
-            
-            c = ''.join(resp['set-cookie'].split(',')[0:4])
-
-            Header['Cookie'] = c
-            Cookie_glo = c
+            # # 新框架不再需要裁剪Cookie
+            # c = ''.join(resp['set-cookie'].split(',')[0:5]).replace(' path=/; domain=.xueqiu.com; httponly', '')
+            # c = c.replace(' HttpOnly', '')
+            # Header['Cookie'] = c
+            # Cookie_glo = c
         else:
             Header['Cookie'] = Cookie_glo
     return Header
@@ -508,7 +531,6 @@ def GetPortfolioInfo(Symbol):
         print('User Interrupt!')
     except:
         raise Exception('无法获取组合信息！')
-    		
     c = re.compile('(<div (style="border:0;padding-left:0" |)'
                    'class="cube-profit-day cube-profit">.+?</div>.+?</div>)')
     data = c.findall(cont.decode('utf-8'))
