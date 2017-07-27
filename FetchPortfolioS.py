@@ -5,7 +5,7 @@
 #Follow the installation guide in https://github.com/PyTables/PyTables/ may help you a lot
 
 # import urllib, httplib2
-import requests
+# import requests
 import time, hashlib, json, re
 # import pandas as pd
 import numpy as np

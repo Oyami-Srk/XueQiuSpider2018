@@ -4,7 +4,7 @@
 """ WebAT with Selenium+PhantomJS for Python """
 
 from IWebAT import IWebAT
-import requests
+# import requests
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.proxy import *
