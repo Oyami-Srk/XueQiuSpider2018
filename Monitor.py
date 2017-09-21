@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #! python3
 
-from PortfolioInfo import *
-from private_data import monitor_log
+import Tools, Page
+from config import monitor_log
 import json, time, os
 import gc
 import random
@@ -31,7 +31,7 @@ def Log2Disk(string):
         fp.close()
 
 def GetLastestTime(Symbol):
-    data = GetPortfolioHistories(Symbol)
+    data = Page.GetPortfolioHistories(Symbol)
     Time = data[0]['Date']
     # del data
     return Time, data
@@ -51,7 +51,7 @@ def InvokeWhenUpdated(Symbol, Last, data):
         if data[i]['Date'] == Last:
             break
     # ShowHistories(data[:i])
-    Log2Disk(ShowHistories(data[:i]))
+    Log2Disk(Tools.ShowHistories(data[:i]))
     # print(data[:i])
     # You can add your logic here! data[:i] means delta History!
     # Saving data to history file is best way!
