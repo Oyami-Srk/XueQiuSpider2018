@@ -4,10 +4,10 @@
 # You can only modifiy this file when you are really understand what you are doingr
 
 proxies  = {}
+host = 'xueqiu.com'
+agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
 login_telephone = ''
 login_password = ''
 login_areacode = '86'
-agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0'
 monitor_log = ''
 delay_time = 1    #in second
-
