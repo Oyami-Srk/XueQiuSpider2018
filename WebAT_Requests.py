@@ -6,18 +6,24 @@
 from IWebAT import IWebAT
 import requests
 
+
 class WebAT(IWebAT):
     """ WebAT with Requests """
 
-    def __init__(self, agent='', timeout=None, proxies=None):
-        IWebAT.__init__(self, agent, timeout, proxies)
+    def __init__(self, agent='', cookie=None, timeout=None, proxies=None):
+        IWebAT.__init__(self, agent, cookie, timeout, proxies)
         self.__method__ = "Requests"
         self.__session__ = requests.session()
         self.SetHeader('User-Agent', agent)
+        if cookie:
+            self.SetCookies(self.GetCookies(cookie))
 
-    def GetCookies(self):
+    def GetCookies(self, cookie):
         "Get Cookies from WebAT"
-        return self.__session__.cookies
+        if cookie:
+            return requests.cookies.cookiejar_from_dict(cookie)
+        else:
+            return self.__session__.cookies
 
     def GetHeaders(self):
         "Get Headers from WebAT"

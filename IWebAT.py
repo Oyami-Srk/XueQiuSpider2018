@@ -12,19 +12,20 @@ from abc import ABCMeta, abstractmethod
 class IWebAT(metaclass=ABCMeta):
     """ Interface for WebAT """
     
-    def __init__(self, agent='', timeout=None, proxies=None):
+    def __init__(self, agent='', cookie=None, timeout=None, proxies=None):
         self.__agent__ = agent
+        self.__cookie__ = cookie
         self.__method__ = "None"
-        self.__version__ = 1
+        self.__version__ = 2
         self.__timeout__ = timeout
         self.__proxies__ = proxies
 
     def __str__(self):
         return "WebAT( V%(version)d ) with %(method)s\nAgent: %(agent)s" % \
-               {'version': self.__version__, 'method':self.__method__, 'agent':self.__agent__}
+               {'version': self.__version__, 'method': self.__method__, 'agent': self.__agent__}
 
     @abstractmethod
-    def GetCookies(self):
+    def GetCookies(self, cookie):
         "Get Cookies from WebAT"
         pass
 
