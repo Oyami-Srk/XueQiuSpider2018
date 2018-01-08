@@ -55,6 +55,6 @@ class IWebAT(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def Get(self, url):
+    def Get(self, url, Body=None):
         "Get Method"
         pass

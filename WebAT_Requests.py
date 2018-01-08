@@ -48,7 +48,7 @@ class WebAT(IWebAT):
         resp = self.__session__.post(url, Body, timeout=self.__timeout__, proxies=self.__proxies__)
         return resp.headers, resp.content
 
-    def Get(self, url):
+    def Get(self, url, Body=None):
         "Get Method"
-        resp = self.__session__.get(url, timeout=self.__timeout__, proxies=self.__proxies__)
+        resp = self.__session__.get(url, params=Body, timeout=self.__timeout__, proxies=self.__proxies__)
         return resp.headers, resp.content
