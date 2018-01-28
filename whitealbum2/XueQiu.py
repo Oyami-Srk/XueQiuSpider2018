@@ -111,7 +111,9 @@ class XueQiu:
                         'Method_Index')
         try:
             sub = index[attrname]
-            func = getattr(importlib.reload(getattr(__import__('XueQiuMethod.' + sub), sub)), attrname)
+            func = getattr(importlib.reload(
+                getattr(__import__('XueQiuMethod.' + sub), sub)),
+                           attrname)
 
             def fn(*arg, **kw):
                 return func(self, *arg, **kw)
