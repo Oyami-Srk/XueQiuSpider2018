@@ -119,9 +119,8 @@ class XueQiu:
                 return func(self, *arg, **kw)
             return fn
         except Exception as e:
-            # e = AttributeError(attrname)
-            # self.Except(str(e), e)
-            raise e
+            e = AttributeError(attrname)
+            self.Except(str(e), e)
 
     def CheckLogin(self):
         c = self.Fetch('https://xueqiu.com/setting/user',
